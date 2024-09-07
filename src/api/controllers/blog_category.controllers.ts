@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { StatusCodes } from "http-status-codes";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {CustomAPIError} from "@/helpers/utils/custom-errors";
 import {
   createCategoryService,
   updateCategoryService,
