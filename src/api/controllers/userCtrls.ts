@@ -31,7 +31,7 @@ import {
 } from "@/services/user.service";
 
 import { AuthenticatedRequest } from "@/interfaces/authenticateRequest";
-import CustomAPIError from "@/utils/custom-errors";
+import { CustomAPIError } from "@/utils/custom-errors";
 import { validateUser, userWithID } from "@/config/validation";
 
 // User Signup controller

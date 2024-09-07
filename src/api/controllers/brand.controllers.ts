@@ -8,7 +8,7 @@ import {
   getBrandService,
   getAllBrandService,
 } from "@/services/brand.service";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {CustomAPIError} from "@/helpers/utils/custom-errors";
 
 export const createNewBrand = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {

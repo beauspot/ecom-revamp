@@ -1,15 +1,14 @@
 import { StatusCodes } from "http-status-codes";
 import { BrandModel } from "@/models/brands.models";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import { validateMongoDbID } from "../helpers/utils/validateDbId";
 import { BrandInterface } from "@/interfaces/brand.interface";
 
 export const createBrandService = async (category: BrandInterface) => {
   const newBrand = await BrandModel.create({ ...category });
   if (!newBrand) {
-    throw new CustomAPIError(
-      "Could not create Category",
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      "Could not create Category"
     );
   }
   return newBrand;
@@ -29,9 +28,8 @@ export const updateBrandService = async (
   );
   validateMongoDbID(brandID);
   if (!updateBrand)
-    throw new CustomAPIError(
-      `The Category ${brandID} was not found to be updated`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The Category ${brandID} was not found to be updated`
     );
   return updateBrand;
 };
@@ -42,9 +40,8 @@ export const deleteBrandService = async (brandID: string) => {
   });
   validateMongoDbID(brandID);
   if (!brandd)
-    throw new CustomAPIError(
-      `The Category with the id: ${brandID} was not found to be deleted`,
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      `The Category with the id: ${brandID} was not found to be deleted`
     );
   return brandd;
 };
@@ -53,9 +50,8 @@ export const getBrandService = async (brand: string) => {
   const brandExists = await BrandModel.findById({ _id: brand });
   validateMongoDbID(brand);
   if (!brandExists)
-    throw new CustomAPIError(
-      `The Product with the id: ${brand} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The Product with the id: ${brand} does not exist`
     );
   return brandExists;
 };
@@ -63,7 +59,7 @@ export const getBrandService = async (brand: string) => {
 export const getAllBrandService = async (): Promise<BrandInterface[]> => {
   const getAllBrands = await BrandModel.find();
   if (getAllBrands.length <= 0) {
-    throw new CustomAPIError(`No category found`, StatusCodes.NO_CONTENT);
+    throw new ServiceAPIError (`No category found`);
   }
   return getAllBrands;
 };

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import { CustomAPIError } from "@/helpers/utils/custom-errors";
 const errorHandlerMiddleware = (
   err: Error,
   req: Request,

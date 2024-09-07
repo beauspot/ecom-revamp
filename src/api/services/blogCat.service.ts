@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import BlogCategoryModel from "@/models/Blog_categoryModels";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 import { BlogCategoryInterface } from "@/interfaces/blog_category_interface ";
 
@@ -9,9 +9,9 @@ export const createCategoryService = async (
 ) => {
   const newCategory = await BlogCategoryModel.create({ ...category });
   if (!newCategory) {
-    throw new CustomAPIError(
+    throw new ServiceAPIError (
       "Could not create Category",
-      StatusCodes.BAD_REQUEST
+      
     );
   }
   return newCategory;
@@ -31,9 +31,8 @@ export const updateCategoryService = async (
   );
   validateMongoDbID(categoryID);
   if (!updateCategory)
-    throw new CustomAPIError(
-      `The Category ${categoryID} was not found to be updated`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The Category ${categoryID} was not found to be updated`
     );
   return updateCategory;
 };
@@ -44,9 +43,8 @@ export const deleteCategoryService = async (categoryID: string) => {
   });
   validateMongoDbID(categoryID);
   if (!category)
-    throw new CustomAPIError(
-      `The Category with the id: ${categoryID} was not found to be deleted`,
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      `The Category with the id: ${categoryID} was not found to be deleted`
     );
   return category;
 };
@@ -55,9 +53,8 @@ export const getCategoryService = async (category: string) => {
   const categoryExists = await BlogCategoryModel.findById({ _id: category });
   validateMongoDbID(category);
   if (!categoryExists)
-    throw new CustomAPIError(
-      `The Product with the id: ${category} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The Product with the id: ${category} does not exist`
     );
   return categoryExists;
 };
@@ -67,7 +64,7 @@ export const getAllCategoryService = async (): Promise<
 > => {
   const getAllCategories = await BlogCategoryModel.find();
   if (getAllCategories.length <= 0) {
-    throw new CustomAPIError(`No category found`, StatusCodes.NO_CONTENT);
+    throw new ServiceAPIError (`No category found`);
   }
   return getAllCategories;
 };

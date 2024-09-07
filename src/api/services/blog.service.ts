@@ -3,7 +3,7 @@ import { BlogModel } from "@/models/blogModel";
 import { UploadedFile } from "express-fileupload";
 // import { authModel } from "../models/userModels";
 import { blogInterface } from "@/interfaces/blog.interface";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 import { cloudinaryUpload } from "@/config/cloudinaryconfig";
 import { FileWithNewPath } from "@/interfaces/filePath";
@@ -12,10 +12,7 @@ import fs from "fs";
 export const createBlog = async (blogPost: blogInterface) => {
   const newBlog = await BlogModel.create({ ...blogPost });
   if (!newBlog)
-    throw new CustomAPIError(
-      "Your Post was not created Successfully.",
-      StatusCodes.BAD_REQUEST
-    );
+    throw new ServiceAPIError ("Your Post was not created Successfully.");
   return newBlog;
 };
 
@@ -32,9 +29,9 @@ export const updateBlog = async (
     }
   );
   if (!updatepost)
-    throw new CustomAPIError(
+    throw new ServiceAPIError (
       `The blog with the id: ${blogId} was not found to be updated`,
-      StatusCodes.NOT_FOUND
+    
     );
   return updatepost;
 };
@@ -44,9 +41,9 @@ export const getSingleBlog = async (blogID: string) => {
     .populate("likes")
     .populate("dislikes");
   if (!blogExists) {
-    throw new CustomAPIError(
+    throw new ServiceAPIError (
       `The blog with the ID ${blogID} does not exist`,
-      StatusCodes.NOT_FOUND
+     
     );
   }
   // Increment numViews by 1
@@ -64,7 +61,7 @@ export const getSingleBlog = async (blogID: string) => {
 export const getAllBlogs = async (): Promise<blogInterface[] | void> => {
   const allBlogs = await BlogModel.find();
   if (allBlogs.length <= 0) {
-    throw new CustomAPIError(`No blogs found`, StatusCodes.NO_CONTENT);
+    throw new ServiceAPIError (`No blogs found`);
   }
   return allBlogs;
 };
@@ -72,9 +69,9 @@ export const getAllBlogs = async (): Promise<blogInterface[] | void> => {
 export const deleteBlog = async (blogId: string) => {
   const blog = await BlogModel.findOneAndDelete({ _id: blogId });
   if (!blog)
-    throw new CustomAPIError(
+    throw new ServiceAPIError (
       `Blog with id: ${blogId} is not found`,
-      StatusCodes.BAD_REQUEST
+    
     );
 };
 
@@ -85,9 +82,8 @@ export const likeBlogService = async (blogId: string, userId: string) => {
   // console.log("blog ID: ", blogId);
 
   if (!blog) {
-    throw new CustomAPIError(
-      `The blog with ID ${blogId} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The blog with ID ${blogId} does not exist`
     );
   }
 
@@ -143,9 +139,8 @@ export const dislikeBlogService = async (blogId: string, userId: string) => {
   const blog = await BlogModel.findById(blogId);
 
   if (!blog) {
-    throw new CustomAPIError(
-      `The blog with ID ${blogId} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The blog with ID ${blogId} does not exist`
     );
   }
 

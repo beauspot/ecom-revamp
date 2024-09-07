@@ -13,7 +13,7 @@ import {
   dislikeBlogService,
   uploadBlogImageService,
 } from "@/services/blog.service";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {CustomAPIError} from "@/helpers/utils/custom-errors";
 import { AuthenticatedRequest } from "@/interfaces/authenticateRequest";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 

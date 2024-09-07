@@ -4,8 +4,7 @@ import { productModel } from "../models/productsModels";
 import { CouponModel } from "../models/coupon.models";
 import { UserCartModel } from "../models/cartModel";
 import { mailer } from "@/config/nodeMailer";
-import CustomAPIError from "@/helpers/utils/custom-errors";
-import UnauthenticatedError from "@/helpers/utils/unauthenticated";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 import { StatusCodes } from "http-status-codes";
 import { generateToken } from "@/helpers/utils/jsonWebToken";
@@ -56,24 +55,21 @@ export const login_user_service = async (
 
   // checking if both fields are omitted
   if (!email || !password) {
-    throw new CustomAPIError(
-      `Email and Password are required for login.`,
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      `Email and Password are required for login.`
     );
   }
   const userExists = await authModel.findOne({ email: email });
   if (!userExists) {
-    throw new UnauthenticatedError(
-      "Password or email didn't match any on our database",
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError(
+      "Password or email didn't match any on our database"
     );
   }
   // comparing the password of the user.
   const isMatch = await userExists.comparePwd(password);
   if (!isMatch) {
-    throw new UnauthenticatedError(
-      "Password or email didn't match any on our database",
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError(
+      "Password or email didn't match any on our database"
     );
   } else {
     //const token = userExists.createJWT();
@@ -98,33 +94,29 @@ export const login_admin_service = async (
 
   // checking if both fields are omitted
   if (!email || !password) {
-    throw new CustomAPIError(
-      `Email and Password are required for login.`,
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      `Email and Password are required for login.`
     );
   }
   const AdminExists = await authModel.findOne({ email: email });
 
   if (!AdminExists) {
-    throw new UnauthenticatedError(
-      "Password or email didn't match any on our database",
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError(
+      "Password or email didn't match any on our database"
     );
   }
 
   // checking fot the role of the Admin
   if (AdminExists.role !== "admin")
-    throw new CustomAPIError(
-      `The User is not an administrator`,
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      `The User is not an administrator`
     );
 
   // comparing the password of the user.
   const isMatch = await AdminExists.comparePwd(password);
   if (!isMatch) {
-    throw new UnauthenticatedError(
-      "Password or email didn't match any on our database",
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError(
+      "Password or email didn't match any on our database"
     );
   } else {
     //const token = userExists.createJWT();
@@ -145,7 +137,7 @@ export const login_admin_service = async (
 export const get_all_users_service = async (): Promise<UserDataInterface[]> => {
   const getUsers = await authModel.find();
   if (getUsers.length <= 0) {
-    throw new CustomAPIError(`No users found`, StatusCodes.NO_CONTENT);
+    throw new ServiceAPIError (`No users found`);
   }
   return getUsers;
 };
@@ -159,9 +151,8 @@ export const get_single_user_service = async (
   const userExists = await authModel.findById({ _id: id });
   console.log(userExists);
   if (!userExists) {
-    throw new CustomAPIError(
-      `The User with the ID: ${id} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The User with the ID: ${id} does not exist`
     );
   }
   return userExists;
@@ -176,9 +167,8 @@ export const delete_single_user = async (
   const user = await authModel.findByIdAndDelete(id).lean();
   // console.log(user);
   if (!user) {
-    throw new CustomAPIError(
-      `The user with the ID: ${id} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The user with the ID: ${id} does not exist`
     );
   }
   const deletedUser = user as UserDataInterface;
@@ -198,9 +188,8 @@ export const updateUserService = async (
   });
   console.log(userId);
   if (!updateuser) {
-    throw new CustomAPIError(
-      `The user with the id: ${id} was not found to be updated`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The user with the id: ${id} was not found to be update`
     );
   }
   return updateuser;
@@ -218,9 +207,8 @@ export const blockUserService = async (
     { new: true }
   );
   if (!blockUser) {
-    throw new UnauthenticatedError(
-      "The User is not avauilable on our database",
-      StatusCodes.NO_CONTENT
+    throw new ServiceAPIError(
+      "The User is not avauilable on our database"
     );
   } else {
     return blockUser;
@@ -241,9 +229,8 @@ export const unBlockUserService = async (
     }
   );
   if (!unblockuser)
-    throw new UnauthenticatedError(
-      "The User is not avauilable on our database",
-      StatusCodes.NO_CONTENT
+    throw new ServiceAPIError(
+      "The User is not avauilable on our database"
     );
   return unblockuser;
 };
@@ -254,16 +241,14 @@ export const handle_refresh_token_service = async (
 ) => {
   const refreshToken = cookies.refreshToken;
   if (!refreshToken) {
-    throw new CustomAPIError(
-      "There is no refresh token in cookies",
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      "There is no refresh token in cookies"
     );
   }
   const token = await authModel.findOne({ refreshToken });
   if (!token)
-    throw new CustomAPIError(
-      "There are no refresh Tokens in cookies",
-      StatusCodes.UNAUTHORIZED
+    throw new ServiceAPIError (
+      "There are no refresh Tokens in cookies"
     );
   let accessToken;
   try {
@@ -271,17 +256,15 @@ export const handle_refresh_token_service = async (
       const decodeJWT = decoded as IDecoded;
       console.log("decodedData: ", decodeJWT);
       if (err || !decoded || token.id !== decodeJWT.id) {
-        throw new CustomAPIError(
-          "There is something wrong with the refresh token",
-          StatusCodes.NOT_ACCEPTABLE
+        throw new ServiceAPIError (
+          "There is something wrong with the refresh token"
         );
       }
       accessToken = generateToken(token.id);
     });
   } catch (error) {
-    throw new CustomAPIError(
-      "Error verifying refresh token",
-      StatusCodes.UNAUTHORIZED
+    throw new ServiceAPIError (
+      "Error verifying refresh token"
     );
   }
   return accessToken;
@@ -294,17 +277,15 @@ export const LogoutService = async (
   const refreshToken = cookies;
 
   if (!refreshToken) {
-    throw new CustomAPIError(
-      "There is no refresh token in cookies",
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      "There is no refresh token in cookies"
     );
   }
   const token = await authModel.findOne({ refreshToken });
 
   if (!token) {
-    throw new CustomAPIError(
-      "There are no refresh token in cookies",
-      StatusCodes.UNAUTHORIZED
+    throw new ServiceAPIError (
+      "There are no refresh token in cookies"
     );
   }
 
@@ -313,9 +294,8 @@ export const LogoutService = async (
       const decodeJWT = decoded as IDecoded;
       console.log("decodedData: ", decodeJWT);
       if (err || token.id !== decodeJWT.id) {
-        throw new CustomAPIError(
-          "There is something wrong with the refresh token",
-          StatusCodes.NOT_ACCEPTABLE
+        throw new ServiceAPIError (
+          "There is something wrong with the refresh token"
         );
       }
 
@@ -323,9 +303,8 @@ export const LogoutService = async (
       blacklistTokens.create({ token: refreshToken });
     });
   } catch (error) {
-    throw new CustomAPIError(
-      "Error verifying refresh token",
-      StatusCodes.UNAUTHORIZED
+    throw new ServiceAPIError (
+      "Error verifying refresh token"
     );
   }
 };
@@ -338,9 +317,8 @@ export const fgtPwdService = async (
     const user = await authModel.findOne({ email: user_email });
 
     if (!user) {
-      throw new CustomAPIError(
-        `We could not find a user with the given email ${user_email}`,
-        StatusCodes.NOT_ACCEPTABLE
+      throw new ServiceAPIError (
+        `We could not find a user with the given email ${user_email}`
       );
     }
     const resetToken = user.createPasswordResetToken();
@@ -352,9 +330,8 @@ export const fgtPwdService = async (
     const subject = "Password reset request received";
     mailer(user_email, subject, message);
   } catch (error) {
-    throw new CustomAPIError(
-      "Could not reset password",
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      "Could not reset password"
     );
   }
 };
@@ -373,9 +350,8 @@ export const resetPwdService = async (
   });
 
   if (!user) {
-    throw new CustomAPIError(
-      "Token is invalid or it has expired!",
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      "Token is invalid or it has expired!"
     );
   }
 
@@ -398,7 +374,7 @@ export const addToWishListService = async (userID: string, prodID: string) => {
     // console.log(user);
     if (!user) {
       // Handle the case where user is not found
-      throw new CustomAPIError("User not found", StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError ("User not found");
     }
     const alreadyAdded = user.wishlists.find((id) => id.toString() === prodID);
 
@@ -424,9 +400,8 @@ export const addToWishListService = async (userID: string, prodID: string) => {
       );
     }
   } catch (err) {
-    throw new CustomAPIError(
-      "Could not add product to wishlists",
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      "Could not add product to wishlists"
     );
   }
 };
@@ -438,9 +413,8 @@ export const getWishListService = async (
   console.log("find User Data: finduser");
   try {
     if (!finduser) {
-      throw new CustomAPIError(
-        `The User with the ID: ${userId} does not exist`,
-        StatusCodes.NOT_FOUND
+      throw new ServiceAPIError (
+        `The User with the ID: ${userId} does not exist`
       );
     }
     console.log("find User Data:", finduser);
@@ -528,9 +502,8 @@ export const getUserCartService = async (
     // console.log(cart);
     return cart;
   } catch (error) {
-    throw new CustomAPIError(
-      "Could not retrieve user's cart",
-      StatusCodes.INTERNAL_SERVER_ERROR
+    throw new ServiceAPIError (
+      "Could not retrieve user's cart"
     );
   }
 };
@@ -542,18 +515,17 @@ export const emptyCartService = async (
   try {
     const user = await authModel.findOne({ _id: userId });
     if (!user) {
-      throw new CustomAPIError("User not found", StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError ("User not found");
     }
     const cart = await UserCartModel.findOneAndRemove({ orderby: userId });
     if (!cart) {
-      throw new CustomAPIError("Cart not found", StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError ("Cart not found");
     }
     return cart;
   } catch (error) {
     console.error("Error in emptyCartService:", error);
-    throw new CustomAPIError(
-      "Couldn't empty the cart",
-      StatusCodes.INTERNAL_SERVER_ERROR
+    throw new ServiceAPIError (
+      "Couldn't empty the cart"
     );
   }
 };
@@ -566,11 +538,11 @@ export const applyCouponService = async (
 
   const validCoupon = await CouponModel.findOne({ name: coupon });
   if (!validCoupon) {
-    throw new CustomAPIError("Invalid Coupon", StatusCodes.BAD_REQUEST);
+    throw new ServiceAPIError ("Invalid Coupon");
   }
   const user = await authModel.findOne({ _id: userId });
   if (!user) {
-    throw new CustomAPIError("User not found", StatusCodes.NOT_FOUND);
+    throw new ServiceAPIError ("User not found");
   }
 
   // Use optional chaining to access cartTotal safely
@@ -579,7 +551,7 @@ export const applyCouponService = async (
   );
 
   if (!userCart) {
-    throw new CustomAPIError("User cart not found", StatusCodes.NOT_FOUND);
+    throw new ServiceAPIError ("User cart not found");
   }
 
   const cartTotal = userCart.cartTotal || 0;
@@ -607,11 +579,11 @@ export const CreateOrderService = async ({
     validateMongoDbID(userId);
     const user = await authModel.findById(userId);
     if (!user)
-      throw new CustomAPIError("User not found", StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError ("User not found");
 
     const userCart = await UserCartModel.findOne({ orderby: userId });
     if (!userCart)
-      throw new CustomAPIError("User cart not found", StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError ("User cart not found");
 
     let finalAmount =
       couponApplied && userCart.totalAfterDiscount
@@ -650,9 +622,8 @@ export const CreateOrderService = async ({
       // return null;
     }
   } catch (error) {
-    throw new CustomAPIError(
-      "Failed To Create Orders",
-      StatusCodes.INTERNAL_SERVER_ERROR
+    throw new ServiceAPIError (
+      "Failed To Create Orders"
     );
   }
 };
@@ -716,11 +687,11 @@ export const updateOrderStatus_service = async ({
     );
 
     if (!updatedOrder) {
-      throw new CustomAPIError("Order Not Found", StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError ("Order Not Found");
     }
     return updatedOrder;
   } catch (error: any) {
     console.log(error.message);
-    throw new CustomAPIError("Failed to update order status", 500);
+    throw new ServiceAPIError ("Failed to update order status");
   }
 };

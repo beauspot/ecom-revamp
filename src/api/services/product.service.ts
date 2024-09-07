@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { UploadedFile } from "express-fileupload";
 import { productModel } from "@/models/productsModels";
 import { authModel } from "@/models/userModels";
-import CustomAPIError from "@/helpers/utils/custom-errors";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import {
   ProductDataInterface,
   GetAllProductsOptions,
@@ -16,9 +16,8 @@ import fs from "fs";
 export const createProductService = async (product: ProductDataInterface) => {
   const newProduct = await productModel.create({ ...product });
   if (!newProduct) {
-    throw new CustomAPIError(
-      "Product creation failed",
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      "Product creation failed"
     );
   }
   return newProduct;
@@ -53,7 +52,7 @@ export const getAllProductsService = async (
     .exec();
 
   if (allProducts.length <= 0) {
-    throw new CustomAPIError("No products found", StatusCodes.NO_CONTENT);
+    throw new ServiceAPIError ("No products found");
   }
   const productsCount: number = await productModel.find(query).count();
 
@@ -69,9 +68,8 @@ export const getSingleProductService = async (productID: string) => {
   const productExists = await productModel.findById({ _id: productID });
   // console.log(productExists);
   if (!productExists) {
-    throw new CustomAPIError(
-      `the product with the id ${productID} does not exist`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `the product with the id ${productID} does not exist`
     );
   }
   return productExists;
@@ -93,9 +91,8 @@ export const updateProductService = async (
   );
   // console.log(prodId);
   if (!updateProduct)
-    throw new CustomAPIError(
-      `The Product with the id: ${prodId} was not found to be updated.`,
-      StatusCodes.NOT_FOUND
+    throw new ServiceAPIError (
+      `The Product with the id: ${prodId} was not found to be updated.`
     );
   return updateProduct;
 };
@@ -105,9 +102,8 @@ export const deleteProductService = async (prodID: string) => {
   const product = await productModel.findOneAndDelete({ _id: prodID });
   // console.log(product);
   if (!product)
-    throw new CustomAPIError(
-      `The Product with the id: ${prodID} was not found to be deleted`,
-      StatusCodes.BAD_REQUEST
+    throw new ServiceAPIError (
+      `The Product with the id: ${prodID} was not found to be deleted`
     );
   return product;
 };
@@ -121,7 +117,7 @@ export const rateProductService = async (
   try {
     const product = await productModel.findById(prodID);
     if (!product) {
-      throw new CustomAPIError(`Product not found`, StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError (`Product not found`);
     }
     let alreadyRated = product.ratings.find(
       (rating) => rating.postedBy.toString() === userID
@@ -148,7 +144,7 @@ export const rateProductService = async (
     }
     const getAllRatings = await productModel.findById(prodID);
     if (!getAllRatings) {
-      throw new CustomAPIError(`Ratings not found`, StatusCodes.NOT_FOUND);
+      throw new ServiceAPIError (`Ratings not found`);
     }
     let totalRating = getAllRatings.ratings.length;
     let ratingsum =
