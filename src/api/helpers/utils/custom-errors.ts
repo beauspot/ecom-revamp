@@ -10,5 +10,3 @@ export class ServiceAPIError extends Error {
   super(message);
   };
 }
-
-
