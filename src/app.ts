@@ -1,7 +1,7 @@
 // external dependencies
 import "reflect-metadata";
 import "express-async-errors";
-import express, { Application, Response } from "express";
+import express, { Application, NextFunction, Request, Response, Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
@@ -50,7 +50,7 @@ import orderRoute from "@/routes/order.routes";
 dotenv.config();
 
 export class EcomApp {
-  private readonly app: Application;
+  private readonly app: Express;
   private readonly Port: number | string;
 
   private MongoDBStore = MongodbSession(session);
@@ -117,6 +117,11 @@ export class EcomApp {
         .json({ message: "Welcome to the E-Commerce rest api application." });
     });
 
+    this.app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
+      res.status(500).send(err.message);
+      next();
+    })
+    
     this.app.use(errorHandlerMiddleware);
     this.app.use("*", __404_err_page);
   }
