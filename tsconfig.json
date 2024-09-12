@@ -30,12 +30,13 @@
       "@/services/*": ["./src/api/services/*"],
       "@/models/*": ["./src/api/models/*"],
       "@/config/*": ["./src/api/helpers/config/*"],
-      "@/DTO/*": ["./src/api/helpers/DTO/*"],
+      "@/dto/*": ["./src/api/helpers/dto/*"],
       "@/schema/*": ["./src/api/helpers/schema/*"],
       "@/enum/*": ["./src/api/helpers/enum/*"],
       "@/interfaces/*": ["./src/api/helpers/interfaces/*"],
       "@/lib/*": ["./src/api/helpers/lib/*"],
       "@/middlewares/*": ["./src/api/helpers/middlewares/*"],
+      "@/validators/*": ["./src/api/helpers/validators/*"],
       "@/utils/*": ["./src/api/helpers/utils/*"],
       "@/types/*": ["./src/api/helpers/types/*"]
     }
