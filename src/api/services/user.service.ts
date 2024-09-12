@@ -1,12 +1,19 @@
+import crypto from "crypto";
+import uniqid from "uniqid";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { Service, Inject } from "typedi";
+
+import logger from "@/utils/logger";
 import { authModel } from "../models/userModels";
 import { UserOrderModel } from "../models/orderModel";
 import { productModel } from "../models/productsModels";
 import { CouponModel } from "../models/coupon.models";
 import { UserCartModel } from "../models/cartModel";
+
 import { mailer } from "@/config/nodeMailer";
 import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
-import { StatusCodes } from "http-status-codes";
 import { generateToken } from "@/helpers/utils/jsonWebToken";
 import { generateRefreshToken } from "../helpers/utils/refreshToken";
 import { UserDataInterface } from "@/interfaces/user_interface";
@@ -14,25 +21,31 @@ import {
   OrderInterface,
   UpdateOrderStatusParams,
 } from "@/interfaces/order_interface";
-import jwt from "jsonwebtoken";
 import { blacklistTokens } from "@/models/blacklistTokens";
-import crypto from "crypto";
 import { IDecoded } from "@/interfaces/authenticateRequest";
 import { CartItem } from "@/interfaces/cartModel_Interface";
-import { CartModelInterface } from "@/interfaces/cartModel_Interface";
 import { CreateOrderParams } from "@/interfaces/create_order";
-import uniqid from "uniqid";
+import { CartModelInterface } from "@/interfaces/cartModel_Interface";
 
-import dotenv from "dotenv";
 
 dotenv.config();
 
-// User signup Services
-export const create_user_service = async (
-  userData: Partial<UserDataInterface>
-) => {
-  try {
-    const newUser = await authModel.create({ ...userData });
+@Service()
+export class UserService {
+  constructor(
+    @Inject(() => authModel) private auth: typeof authModel,
+    @Inject(() => productModel) private product: typeof productModel,
+    @Inject(() => UserOrderModel) private order: typeof UserOrderModel,
+    @Inject(() => UserCartModel) private cart: typeof UserCartModel,
+    @Inject(() => CouponModel) private coupon: typeof CouponModel,
+    @Inject(() => blacklistTokens) private blacklisttokens: typeof blacklistTokens
+  ) { }
+  
+  // User signup Services
+  create_user_service = async (
+    userData: Partial<UserDataInterface>
+  ) => {
+    const newUser = await this.auth.create({ ...userData });
     const userToken = newUser.createJWT();
 
     // Send a welcome
@@ -42,282 +55,269 @@ export const create_user_service = async (
 
     mailer(email, subject, text);
     return { newUser, userToken };
-  } catch (error: any) {
-    throw new Error(`Error signing up new User: ${error.message}`);
-  }
-};
+    
+  };
+    
+  // Login User service
+  login_user_service = async (
+    userData: Partial<UserDataInterface>
+  ) => {
+    const { email, password } = userData; // Extract Email and Password from userData
 
-// Login User service
-export const login_user_service = async (
-  userData: Partial<UserDataInterface>
-) => {
-  const { email, password } = userData; // Extract Email and Password from userData
-
-  // checking if both fields are omitted
-  if (!email || !password) {
-    throw new ServiceAPIError (
-      `Email and Password are required for login.`
-    );
-  }
-  const userExists = await authModel.findOne({ email: email });
-  if (!userExists) {
-    throw new ServiceAPIError(
-      "Password or email didn't match any on our database"
-    );
-  }
-  // comparing the password of the user.
-  const isMatch = await userExists.comparePwd(password);
-  if (!isMatch) {
-    throw new ServiceAPIError(
-      "Password or email didn't match any on our database"
-    );
-  } else {
-    //const token = userExists.createJWT();
-    const token: string = generateToken(userExists._id);
-    const refreshToken = generateRefreshToken(userExists._id);
-    const updateLoggedUser = await authModel.findByIdAndUpdate(
-      userExists._id,
-      {
-        refreshToken: refreshToken,
-      },
-      { new: true }
-    );
-    return { userExists, token, updateLoggedUser };
-  }
-};
-
-// Login Admin Service
-export const login_admin_service = async (
-  AdminData: Partial<UserDataInterface>
-) => {
-  const { email, password } = AdminData; // Extract Email and Password from userData
-
-  // checking if both fields are omitted
-  if (!email || !password) {
-    throw new ServiceAPIError (
-      `Email and Password are required for login.`
-    );
-  }
-  const AdminExists = await authModel.findOne({ email: email });
-
-  if (!AdminExists) {
-    throw new ServiceAPIError(
-      "Password or email didn't match any on our database"
-    );
-  }
-
-  // checking fot the role of the Admin
-  if (AdminExists.role !== "admin")
-    throw new ServiceAPIError (
-      `The User is not an administrator`
-    );
-
-  // comparing the password of the user.
-  const isMatch = await AdminExists.comparePwd(password);
-  if (!isMatch) {
-    throw new ServiceAPIError(
-      "Password or email didn't match any on our database"
-    );
-  } else {
-    //const token = userExists.createJWT();
-    const token: string = generateToken(AdminExists._id);
-    const refreshToken = generateRefreshToken(AdminExists._id);
-    const updateLoggedUser = await authModel.findByIdAndUpdate(
-      AdminExists._id,
-      {
-        refreshToken: refreshToken,
-      },
-      { new: true }
-    );
-    return { AdminExists, token, updateLoggedUser };
-  }
-};
-
-// get all users service
-export const get_all_users_service = async (): Promise<UserDataInterface[]> => {
-  const getUsers = await authModel.find();
-  if (getUsers.length <= 0) {
-    throw new ServiceAPIError (`No users found`);
-  }
-  return getUsers;
-};
-
-// Get a Single user Service
-export const get_single_user_service = async (
-  userID: string
-): Promise<UserDataInterface> => {
-  const id = userID; // destructure the user ID from the user
-  validateMongoDbID(id);
-  const userExists = await authModel.findById({ _id: id });
-  console.log(userExists);
-  if (!userExists) {
-    throw new ServiceAPIError (
-      `The User with the ID: ${id} does not exist`
-    );
-  }
-  return userExists;
-};
-
-//Delete a single user service
-export const delete_single_user = async (
-  userId: Partial<UserDataInterface>
-): Promise<UserDataInterface> => {
-  const { id } = userId;
-  validateMongoDbID(id);
-  const user = await authModel.findByIdAndDelete(id).lean();
-  // console.log(user);
-  if (!user) {
-    throw new ServiceAPIError (
-      `The user with the ID: ${id} does not exist`
-    );
-  }
-  const deletedUser = user as UserDataInterface;
-  return deletedUser;
-};
-
-// Updating the user Service
-export const updateUserService = async (
-  userId: Partial<UserDataInterface>,
-  updateData: UserDataInterface
-): Promise<UserDataInterface> => {
-  const { id } = userId;
-  validateMongoDbID(id);
-  const updateuser = await authModel.findOneAndUpdate({ _id: id }, updateData, {
-    new: true,
-    runValidators: true,
-  });
-  console.log(userId);
-  if (!updateuser) {
-    throw new ServiceAPIError (
-      `The user with the id: ${id} was not found to be update`
-    );
-  }
-  return updateuser;
-};
-
-// blocking a user service
-export const blockUserService = async (
-  User: Partial<UserDataInterface>
-): Promise<UserDataInterface> => {
-  const { id } = User;
-  validateMongoDbID(id);
-  const blockUser = await authModel.findByIdAndUpdate(
-    id,
-    { isBlocked: true },
-    { new: true }
-  );
-  if (!blockUser) {
-    throw new ServiceAPIError(
-      "The User is not avauilable on our database"
-    );
-  } else {
-    return blockUser;
-  }
-};
-
-// unblocking a user
-export const unBlockUserService = async (
-  User: Partial<UserDataInterface>
-): Promise<UserDataInterface> => {
-  const { id } = User;
-  validateMongoDbID(id);
-  const unblockuser = await authModel.findByIdAndUpdate(
-    id,
-    { isBlocked: false },
-    {
-      new: true,
+    // checking if both fields are omitted
+    if (!email || !password) {
+      throw new ServiceAPIError(
+        `Email and Password are required for login.`
+      );
     }
-  );
-  if (!unblockuser)
-    throw new ServiceAPIError(
-      "The User is not avauilable on our database"
-    );
-  return unblockuser;
-};
+    const userExists = await this.auth.findOne({ email: email });
+    if (!userExists) {
+      throw new ServiceAPIError(
+        "Password or email didn't match any on our database"
+      );
+    }
+    // comparing the password of the user.
+    const isMatch = await userExists.comparePwd(password);
+    if (!isMatch) {
+      throw new ServiceAPIError(
+        "Password or email didn't match any on our database"
+      );
+    } else {
+      //const token = userExists.createJWT();
+      const token: string = generateToken(userExists._id);
+      const refreshToken = generateRefreshToken(userExists._id);
+      const updateLoggedUser = await this.auth.findByIdAndUpdate(
+        userExists._id,
+        {
+          refreshToken: refreshToken,
+        },
+        { new: true }
+      );
+      return { userExists, token, updateLoggedUser };
+    }
+  };
+  // Login Admin Service
+  login_admin_service = async (
+    AdminData: Partial<UserDataInterface>
+  ) => {
+    const { email, password } = AdminData; // Extract Email and Password from userData
 
-// handle refresh Token service
-export const handle_refresh_token_service = async (
-  cookies: UserDataInterface
-) => {
-  const refreshToken = cookies.refreshToken;
-  if (!refreshToken) {
-    throw new ServiceAPIError (
-      "There is no refresh token in cookies"
+    // checking if both fields are omitted
+    if (!email || !password) {
+      throw new ServiceAPIError(
+        `Email and Password are required for login.`
+      );
+    }
+    const AdminExists = await this.auth.findOne({ email: email });
+
+    if (!AdminExists) {
+      throw new ServiceAPIError(
+        "Password or email didn't match any on our database"
+      );
+    }
+
+    // checking fot the role of the Admin
+    if (AdminExists.role !== "admin")
+      throw new ServiceAPIError(
+        `The User is not an administrator`
+      );
+
+    // comparing the password of the user.
+    const isMatch = await AdminExists.comparePwd(password);
+    if (!isMatch) {
+      throw new ServiceAPIError(
+        "Password or email didn't match any on our database"
+      );
+    } else {
+      //const token = userExists.createJWT();
+      const token: string = generateToken(AdminExists._id);
+      const refreshToken = generateRefreshToken(AdminExists._id);
+      const updateLoggedUser = await this.auth.findByIdAndUpdate(
+        AdminExists._id,
+        {
+          refreshToken: refreshToken,
+        },
+        { new: true }
+      );
+      return { AdminExists, token, updateLoggedUser };
+    }
+  };
+  
+  // get all users service
+  get_all_users_service = async (): Promise<UserDataInterface[]> => {
+    const getUsers = await this.auth.find();
+    if (getUsers.length <= 0) throw new ServiceAPIError(`No users found`);
+    return getUsers;
+  };
+  
+  // Get a Single user Service
+  get_single_user_service = async (
+    userID: string
+  ): Promise<UserDataInterface> => {
+    const id = userID; // destructure the user ID from the user
+    validateMongoDbID(id);
+    const userExists = await this.auth.findById({ _id: id });
+    console.log(userExists);
+    if (!userExists) {
+      throw new ServiceAPIError(
+        `The User with the ID: ${id} does not exist`
+      );
+    }
+    return userExists;
+  };
+
+  //Delete a single user service
+  delete_single_user = async (
+    userId: Partial<UserDataInterface>
+  ): Promise<UserDataInterface> => {
+    const { id } = userId;
+    validateMongoDbID(id);
+    const user = await this.auth.findByIdAndDelete(id).lean();
+    // console.log(user);
+    if (!user) {
+      throw new ServiceAPIError(
+        `The user with the ID: ${id} does not exist`
+      );
+    }
+    const deletedUser = user as UserDataInterface;
+    return deletedUser;
+  };
+  
+  // Updating the user Service
+  updateUserService = async (
+    userId: Partial<UserDataInterface>,
+    updateData: UserDataInterface
+  ): Promise<UserDataInterface> => {
+    const { id } = userId;
+    validateMongoDbID(id);
+    const updateuser = await this.auth.findOneAndUpdate({ _id: id }, updateData, {
+      new: true,
+      runValidators: true,
+    });
+    // console.log(userId);
+    if (!updateuser) {
+      throw new ServiceAPIError(
+        `The user with the id: ${id} was not found to be update`
+      );
+    }
+    return updateuser;
+  };
+  
+  // blocking a user service
+  blockUserService = async (
+    User: Partial<UserDataInterface>
+  ): Promise<UserDataInterface> => {
+    const { id } = User;
+    validateMongoDbID(id);
+    const blockUser = await this.auth.findByIdAndUpdate(
+      id,
+      { isBlocked: true },
+      { new: true }
     );
-  }
-  const token = await authModel.findOne({ refreshToken });
-  if (!token)
-    throw new ServiceAPIError (
-      "There are no refresh Tokens in cookies"
+    if (!blockUser) {
+      throw new ServiceAPIError(
+        "The User is not avauilable on our database"
+      );
+    } else {
+      return blockUser;
+    }
+  };
+  
+  // unblocking a user
+  unBlockUserService = async (
+    User: Partial<UserDataInterface>
+  ): Promise<UserDataInterface> => {
+    const { id } = User;
+    validateMongoDbID(id);
+    const unblockuser = await this.auth.findByIdAndUpdate(
+      id,
+      { isBlocked: false },
+      {
+        new: true,
+      }
     );
-  let accessToken;
-  try {
+    if (!unblockuser)
+      throw new ServiceAPIError(
+        "The User is not avauilable on our database"
+      );
+    return unblockuser;
+  };
+  
+  // handle refresh Token service
+  handle_refresh_token_service = async (
+    cookies: UserDataInterface
+  ) => {
+    const refreshToken = cookies.refreshToken;
+    if (!refreshToken) {
+      throw new ServiceAPIError(
+        "There is no refresh token in cookies"
+      );
+    }
+    const token = await this.auth.findOne({ refreshToken });
+    if (!token)
+      throw new ServiceAPIError(
+        "There are no refresh Tokens in cookies"
+      );
+    let accessToken;
     jwt.verify(refreshToken, process.env.JWT_SECRET!, (err, decoded) => {
       const decodeJWT = decoded as IDecoded;
       console.log("decodedData: ", decodeJWT);
       if (err || !decoded || token.id !== decodeJWT.id) {
-        throw new ServiceAPIError (
+        throw new ServiceAPIError(
           "There is something wrong with the refresh token"
         );
       }
       accessToken = generateToken(token.id);
     });
-  } catch (error) {
-    throw new ServiceAPIError (
-      "Error verifying refresh token"
-    );
-  }
-  return accessToken;
-};
+  
+    return accessToken;
+  };
+  
+  // Logout Service functionality
+  LogoutService = async (
+    cookies: string
+  ): Promise<UserDataInterface | void> => {
+    const refreshToken = cookies;
 
-// Logout Service functionality
-export const LogoutService = async (
-  cookies: string
-): Promise<UserDataInterface | void> => {
-  const refreshToken = cookies;
+    if (!refreshToken) {
+      throw new ServiceAPIError(
+        "There is no refresh token in cookies"
+      );
+    }
+    const token = await this.auth.findOne({ refreshToken });
 
-  if (!refreshToken) {
-    throw new ServiceAPIError (
-      "There is no refresh token in cookies"
-    );
-  }
-  const token = await authModel.findOne({ refreshToken });
-
-  if (!token) {
-    throw new ServiceAPIError (
-      "There are no refresh token in cookies"
-    );
-  }
-
-  try {
-    jwt.verify(refreshToken, process.env.JWT_SECRET!, (err, decoded) => {
+    if (!token) {
+      // logger.error("error ln 291");
+      throw new ServiceAPIError(
+        "There are no refresh token in cookies"
+      );
+    };
+    
+    jwt.verify(refreshToken, process.env.JWT_SECRET as string, (err, decoded) => {
       const decodeJWT = decoded as IDecoded;
-      console.log("decodedData: ", decodeJWT);
+      logger.info("decodedData: ", decodeJWT);
       if (err || token.id !== decodeJWT.id) {
-        throw new ServiceAPIError (
+        // logger.error(err);
+        throw new ServiceAPIError(
           "There is something wrong with the refresh token"
-        );
-      }
+        )
+      };
 
       // Assuming we have a blacklistTokens model
-      blacklistTokens.create({ token: refreshToken });
+      this.blacklisttokens.create({ token: refreshToken });
     });
-  } catch (error) {
-    throw new ServiceAPIError (
-      "Error verifying refresh token"
-    );
-  }
-};
 
-// Forgot password service
-export const fgtPwdService = async (
-  user_email: string
-): Promise<UserDataInterface | void> => {
-  try {
-    const user = await authModel.findOne({ email: user_email });
+  };
+  
+  // Forgot password service
+  fgtPwdService = async (
+    user_email: string
+  ): Promise<UserDataInterface | void> => {
+  
+    const user = await this.auth.findOne({ email: user_email });
 
     if (!user) {
-      throw new ServiceAPIError (
+      throw new ServiceAPIError(
         `We could not find a user with the given email ${user_email}`
       );
     }
@@ -329,57 +329,52 @@ export const fgtPwdService = async (
     Please use the link below to reset your password:\n\n${resetUrl}\n\nThis link expires after 10 minutes.`;
     const subject = "Password reset request received";
     mailer(user_email, subject, message);
-  } catch (error) {
-    throw new ServiceAPIError (
-      "Could not reset password"
-    );
-  }
-};
+  };
+  
+  // Reset password service
+  resetPwdService = async (
+    token: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Promise<UserDataInterface | void> => {
+    // checking if the user exists with the given token & has not expired.
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await this.auth.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
 
-// Reset password service
-export const resetPwdService = async (
-  token: string,
-  newPassword: string,
-  confirmPassword: string
-): Promise<UserDataInterface | void> => {
-  // checking if the user exists with the given token & has not expired.
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  const user = await authModel.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
+    if (!user) {
+      throw new ServiceAPIError(
+        "Token is invalid or it has expired!"
+      );
+    }
 
-  if (!user) {
-    throw new ServiceAPIError (
-      "Token is invalid or it has expired!"
-    );
-  }
+    // Resetting the user password
+    user.password = newPassword;
+    user.confirmPassword = confirmPassword;
+    user.passwordResetExpires = undefined;
+    user.passwordResetToken = undefined;
+    user.passwordChangedAt = new Date(Date.now());
 
-  // Resetting the user password
-  user.password = newPassword;
-  user.confirmPassword = confirmPassword;
-  user.passwordResetExpires = undefined;
-  user.passwordResetToken = undefined;
-  user.passwordChangedAt = new Date(Date.now());
+    await user.save();
 
-  await user.save();
-
-  return user;
-};
-
-// add to wishlist functionality
-export const addToWishListService = async (userID: string, prodID: string) => {
-  try {
-    const user = await authModel.findById(userID);
+    return user;
+  };
+  
+  // add to wishlist functionality
+  addToWishListService = async (userID: string, prodID: string) => {
+ 
+    const user = await this.auth.findById(userID);
     // console.log(user);
     if (!user) {
       // Handle the case where user is not found
-      throw new ServiceAPIError ("User not found");
+      throw new ServiceAPIError("User not found");
     }
     const alreadyAdded = user.wishlists.find((id) => id.toString() === prodID);
 
     if (alreadyAdded) {
-      return await authModel.findByIdAndUpdate(
+      return await this.auth.findByIdAndUpdate(
         userID,
         {
           $pull: { wishlists: prodID },
@@ -389,7 +384,7 @@ export const addToWishListService = async (userID: string, prodID: string) => {
         }
       );
     } else {
-      return await authModel.findByIdAndUpdate(
+      return await this.auth.findByIdAndUpdate(
         userID,
         {
           $push: { wishlists: prodID },
@@ -398,36 +393,30 @@ export const addToWishListService = async (userID: string, prodID: string) => {
           new: true,
         }
       );
-    }
-  } catch (err) {
-    throw new ServiceAPIError (
-      "Could not add product to wishlists"
-    );
-  }
-};
+    };
 
-export const getWishListService = async (
+    
+  };
+
+  getWishListService = async (
   userId: string | undefined
 ): Promise<UserDataInterface> => {
-  const finduser = await authModel.findById(userId).populate("wishlists");
+  const finduser = await this.auth.findById(userId).populate("wishlists");
   console.log("find User Data: finduser");
-  try {
+ 
     if (!finduser) {
-      throw new ServiceAPIError (
-        `The User with the ID: ${userId} does not exist`
+      throw new ServiceAPIError(
+        `The User with the ID: ${userId} does not exist`,
       );
     }
-    console.log("find User Data:", finduser);
+    // console.log("find User Data:", finduser);
     return finduser;
-  } catch (error) {
-    throw new Error("Could not retrieve wishlist");
-  }
+ 
 };
 
-export const saveAddress_service = async (userID: string, address: string) => {
+  saveAddress_service = async (userID: string, address: string) => {
   validateMongoDbID(userID);
-  try {
-    const updateUser = await authModel.findByIdAndUpdate(
+    const updateUser = await this.auth.findByIdAndUpdate(
       userID,
       { address },
       { new: true }
@@ -435,21 +424,17 @@ export const saveAddress_service = async (userID: string, address: string) => {
     if (!updateUser) {
       throw new Error(`User with ID ${userID} not found`);
     }
-    console.log("user data: ", updateUser);
+    // console.log("user data: ", updateUser);
     return updateUser;
-  } catch (error) {
-    // console.error("Error while updating user:", error);
-    throw new Error("Could not save address");
-  }
-};
-
-export const userCartService = async (userId: string, cart: CartItem[]) => {
+  };
+  
+   userCartService = async (userId: string, cart: CartItem[]) => {
   let products = [];
 
-  const user = await authModel.findById(userId);
+  const user = await this.auth.findById(userId);
 
   // checking if the user already has a cart.
-  const userAlreadyHascart = await UserCartModel.findOne({
+  const userAlreadyHascart = await this.cart.findOne({
     orderby: user?._id,
   });
   if (userAlreadyHascart) {
@@ -464,7 +449,7 @@ export const userCartService = async (userId: string, cart: CartItem[]) => {
       price: 0,
     };
 
-    const getPrice = await productModel
+    const getPrice = await this.product
       .findById(cart[i].id)
       .select("price")
       .exec();
@@ -480,79 +465,68 @@ export const userCartService = async (userId: string, cart: CartItem[]) => {
     cartTotal = cartTotal + products[i].price * products[i].count;
   }
 
-  const newCart = await new UserCartModel({
+  const newCart = await new this.cart({
     products,
     cartTotal,
     orderby: user?._id,
   }).save();
   return newCart;
 };
+  
+  // TODO: this needs to be worked on there is a bug in it...
+  getUserCartService = async (
+    userId: string
+  ): Promise<CartModelInterface | null | void> => {
+    // console.log("User ID Data: ", userId);
+    validateMongoDbID(userId);
 
-// this needs to be worked on there is a bug in it...
-export const getUserCartService = async (
-  userId: string
-): Promise<CartModelInterface | null> => {
-  // console.log("User ID Data: ", userId);
-  validateMongoDbID(userId);
-  try {
-    const cart = await UserCartModel.findOne({ orderby: userId }).populate(
+    const cart = await this.order.findOne({ orderby: userId }).populate(
       "products.product",
       "_id title price totalAfterDiscount"
     );
     // console.log(cart);
-    return cart;
-  } catch (error) {
-    throw new ServiceAPIError (
-      "Could not retrieve user's cart"
-    );
-  }
-};
+    // return cart;
+  };
 
-export const emptyCartService = async (
+emptyCartService = async (
   userId: string
 ): Promise<CartModelInterface | void> => {
   validateMongoDbID(userId);
-  try {
-    const user = await authModel.findOne({ _id: userId });
-    if (!user) {
-      throw new ServiceAPIError ("User not found");
-    }
-    const cart = await UserCartModel.findOneAndRemove({ orderby: userId });
-    if (!cart) {
-      throw new ServiceAPIError ("Cart not found");
-    }
-    return cart;
-  } catch (error) {
-    console.error("Error in emptyCartService:", error);
-    throw new ServiceAPIError (
-      "Couldn't empty the cart"
-    );
-  }
-};
 
-export const applyCouponService = async (
+    const user = await this.auth.findOne({ _id: userId });
+    if (!user) throw new ServiceAPIError ("User not found");
+    
+  const cart = await this.cart.findOneAndRemove({ orderby: userId });
+  
+    if (!cart) 
+      throw new ServiceAPIError("Cart not found");
+  
+    return cart;
+};
+  
+  applyCouponService = async (
   userId: string,
   coupon: string
 ): Promise<number> => {
   validateMongoDbID(userId);
 
-  const validCoupon = await CouponModel.findOne({ name: coupon });
+  const validCoupon = await this.coupon.findOne({ name: coupon });
   if (!validCoupon) {
     throw new ServiceAPIError ("Invalid Coupon");
   }
-  const user = await authModel.findOne({ _id: userId });
+  const user = await this.auth.findOne({ _id: userId });
   if (!user) {
     throw new ServiceAPIError ("User not found");
   }
 
   // Use optional chaining to access cartTotal safely
-  const userCart = await UserCartModel.findOne({ orderby: userId })?.populate(
+  const userCart = await this.cart.findOne({ orderby: userId })?.populate(
     "products.product"
   );
 
-  if (!userCart) {
+  if (!userCart) 
     throw new ServiceAPIError ("User cart not found");
-  }
+  
 
   const cartTotal = userCart.cartTotal || 0;
 
@@ -561,27 +535,27 @@ export const applyCouponService = async (
     (cartTotal * validCoupon.discount) / 100
   ).toFixed(2);
 
-  await UserCartModel.findOneAndUpdate(
+  await this.cart.findOneAndUpdate(
     { orderby: userId },
     { totalAfterDiscount },
     { new: true }
   );
 
   return parseFloat(totalAfterDiscount);
-};
-
-export const CreateOrderService = async ({
+  };
+  
+  CreateOrderService = async ({
   userId,
   COD,
   couponApplied,
 }: CreateOrderParams): Promise<void> => {
-  try {
+  
     validateMongoDbID(userId);
-    const user = await authModel.findById(userId);
+    const user = await this.auth.findById(userId);
     if (!user)
       throw new ServiceAPIError ("User not found");
 
-    const userCart = await UserCartModel.findOne({ orderby: userId });
+    const userCart = await this.cart.findOne({ orderby: userId });
     if (!userCart)
       throw new ServiceAPIError ("User cart not found");
 
@@ -592,7 +566,7 @@ export const CreateOrderService = async ({
 
     const paymentMethod = COD ? "COD" : "Online Payment";
 
-    const newOrder = await new UserOrderModel({
+    const newOrder = await new this.order({
       products: userCart.products,
       paymentIntent: {
         id: uniqid(),
@@ -615,63 +589,48 @@ export const CreateOrderService = async ({
           },
         };
       });
-      await productModel.bulkWrite(update, {});
+      await this.product.bulkWrite(update, {});
     } else {
       // console.error("Product or product._id is undefined:", item);
-      throw new Error(`${userCart.products} is not an array`);
+      throw new ServiceAPIError(`${userCart.products} is not an array`);
       // return null;
     }
-  } catch (error) {
-    throw new ServiceAPIError (
-      "Failed To Create Orders"
-    );
-  }
-};
-
-export const getOrderService = async (userId: string) => {
+ 
+  };
+  
+  getOrderService = async (userId: string) => {
   validateMongoDbID(userId);
-  console.log(`User ID: ${userId}`);
-  try {
-    const userOrders = await UserOrderModel.findOne({ orderby: userId })
+  // console.log(`User ID: ${userId}`);
+    const userOrders = await this.order.findOne({ orderby: userId })
       .populate("products.product")
       .populate("orderby")
       .exec();
     return userOrders;
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
-
-export const getAllOrdersService = async () => {
-  try {
-    const alluserorders = await UserOrderModel.find()
+  
+  };
+  
+  getAllOrdersService = async () => {
+    const alluserorders = await this.order.find()
       .populate("products.product")
       .populate("orderby")
       .exec();
     return alluserorders;
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
-
-export const getOrderByUserIdService = async (userId: string) => {
+  };
+  
+  getOrderByUserIdService = async (userId: string) => {
   validateMongoDbID(userId);
-  try {
-    const user_orders = await UserOrderModel.findOne({ orderby: userId })
+    const user_orders = await this.order.findOne({ orderby: userId })
       .populate("products.product")
       .populate("orderby")
       .exec();
     return user_orders;
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
+  };
+  
+  updateOrderStatus_service = async ({
+    status,
+    id,
+  }: UpdateOrderStatusParams): Promise<OrderInterface | null> => {
 
-export const updateOrderStatus_service = async ({
-  status,
-  id,
-}: UpdateOrderStatusParams): Promise<OrderInterface | null> => {
-  try {
     validateMongoDbID(id);
     const update = {
       orderStatus: status,
@@ -680,18 +639,19 @@ export const updateOrderStatus_service = async ({
       },
     };
 
-    const updatedOrder = await UserOrderModel.findOneAndUpdate(
+    const updatedOrder = await this.order.findOneAndUpdate(
       { _id: id },
       update,
       { new: true }
     );
 
-    if (!updatedOrder) {
-      throw new ServiceAPIError ("Order Not Found");
-    }
+    if (!updatedOrder) throw new ServiceAPIError("Order Not Found");
+    
     return updatedOrder;
-  } catch (error: any) {
-    console.log(error.message);
-    throw new ServiceAPIError ("Failed to update order status");
-  }
+  };
 };
+
+
+
+
+

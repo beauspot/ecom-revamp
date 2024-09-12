@@ -31,11 +31,8 @@ const userSchema = new Schema<UserDataInterface>(
     password: {
       type: String,
       required: true,
-      maxLength: 15,
-    },
-    confirmPassword: {
-      type: String,
-      required: true,
+      minLength: 9,
+      maxLength: 20,
     },
     role: {
       type: String,
@@ -79,7 +76,6 @@ userSchema.pre("save", async function (next) {
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  this.confirmPassword = await bcrypt.hash(this.confirmPassword, salt);
   next();
 });
 

@@ -1,5 +1,4 @@
 import { Document, Types } from "mongoose";
-
 export interface UserDataInterface extends Document {
   firstName: string;
   lastName: string;
