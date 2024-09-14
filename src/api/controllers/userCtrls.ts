@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import asyncHandler from "express-async-handler";
-import { plainToClass } from "class-transformer";
+import { plainToInstance } from "class-transformer";
 import { Service, Inject, Container } from "typedi";
 
 import logger from "@/utils/logger";
@@ -38,7 +38,7 @@ export class UserController {
       // Convert the Mongoose document to a plain object, then to a DTO
       // const plainUserObj = newUser.toObject();
       // convert the user obj to DTO & send response
-      const userRes = plainToClass(UserResponseDto,  newUser, {
+      const userRes = plainToInstance(UserResponseDto,  newUser, {
         excludeExtraneousValues: true,
         exposeUnsetFields: false
       });
@@ -46,7 +46,7 @@ export class UserController {
       // userRes.fullname = `${userRes.firstName} ${userRes.lastName}`
 
       // Convert DTO instance to a plain object for response
-      const userResPlain = JSON.parse(JSON.stringify(userRes));
+      // const userResPlain = JSON.parse(JSON.stringify(userRes));
 
       res
         .status(StatusCodes.CREATED)
@@ -126,7 +126,13 @@ export class UserController {
     async (req: Request, res: Response): Promise<void> => {
       const users = await this.userService.get_all_users_service();
       //console.log(users);
-      res.status(StatusCodes.OK).json({ numberOfUsers: users.length, users });
+
+      const formated_response = plainToInstance(UserResponseDto, users, {
+        excludeExtraneousValues: true,
+        exposeUnsetFields: false
+      });
+
+      res.status(StatusCodes.OK).json({ numberOfUsers: formated_response.length, users: formated_response });
     }
   );
 
@@ -137,7 +143,12 @@ export class UserController {
 
     const userDataID = await this.userService.get_single_user_service(id);
 
-    res.status(StatusCodes.OK).json({ userDataID });
+    const formated_response = plainToInstance(UserResponseDto, userDataID, {
+      excludeExtraneousValues: true,
+      exposeUnsetFields: false
+    })
+
+    res.status(StatusCodes.OK).json({ user: formated_response });
   });
 
   // Deleting a single user controller
@@ -160,9 +171,13 @@ export class UserController {
         { id },
         req.body
       );
+      const formated_response = plainToInstance(UserResponseDto, updatedUser, {
+        excludeExtraneousValues: true,
+        exposeUnsetFields: false
+      });
       res
         .status(StatusCodes.OK)
-        .json({ status: "successfully Updated User", updatedUser });
+        .json({ status: "successfully Updated User", user: formated_response });
     }
   );
 
@@ -171,10 +186,16 @@ export class UserController {
     async (req: Request, res: Response): Promise<void> => {
       const { id } = req.params;
       // console.log(id);
+
       const blockedUser = await this.userService.blockUserService({ id });
+          const formated_response = plainToInstance(UserResponseDto, blockedUser, {
+        excludeExtraneousValues: true,
+        exposeUnsetFields: false
+          });
+      
       res.status(StatusCodes.OK).json({
         status: "User blocked Successfully",
-        userData: { userBlocked: blockedUser.isBlocked },
+        user: formated_response,
       });
     }
   );
@@ -186,9 +207,15 @@ export class UserController {
       const { id } = req.params;
       // console.log(id);
       const unblockedUser = await this.userService.unBlockUserService({ id });
+
+      const formated_response = plainToInstance(UserResponseDto, unblockedUser, {
+        excludeExtraneousValues: true,
+        exposeUnsetFields: false
+      });
+
       res.status(StatusCodes.OK).json({
         status: `User Un-Blocked Successfully`,
-        userData: { userBlocked: unblockedUser.isBlocked },
+        user: formated_response,
       });
     }
   );
