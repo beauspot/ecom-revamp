@@ -22,6 +22,9 @@ export class UserResponseDto {
   @Exclude()
   mobileNumber: string;
 
+  @Expose()
+  isBlocked: boolean;
+
   @Expose() 
   fullname: string;
 
