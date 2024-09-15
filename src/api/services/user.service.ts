@@ -5,17 +5,17 @@ import jwt from "jsonwebtoken";
 import { Service, Inject } from "typedi";
 
 import logger from "@/utils/logger";
-import { authModel } from "../models/userModels";
-import { UserOrderModel } from "../models/orderModel";
-import { productModel } from "../models/productsModels";
-import { CouponModel } from "../models/coupon.models";
-import { UserCartModel } from "../models/cartModel";
+import { authModel } from "@/models/userModels";
+import { UserOrderModel } from "@/models/orderModel";
+import { productModel } from "@/models/productsModels";
+import { CouponModel } from "@/models/coupon.models";
+import { UserCartModel } from "@/models/cartModel";
 
 import { mailer } from "@/config/nodeMailer";
 import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 import { generateToken } from "@/helpers/utils/jsonWebToken";
-import { generateRefreshToken } from "../helpers/utils/refreshToken";
+import { generateRefreshToken } from "@/helpers/utils/refreshToken";
 import { UserDataInterface } from "@/interfaces/user_interface";
 import {
   OrderInterface,
