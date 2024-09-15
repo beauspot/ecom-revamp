@@ -1,5 +1,6 @@
-import { z, object, string, TypeOf } from "zod";
 import validator from "validator";
+import { isValidObjectId } from "mongoose";
+import { z, object, string, TypeOf } from "zod";
 
 /**
  * TODO:
@@ -10,6 +11,8 @@ import validator from "validator";
  * password
  * role
  * address
+ * 
+ * Settin gup validations for req.params and req.query
  */
 
 export enum UserRoles {
@@ -18,6 +21,7 @@ export enum UserRoles {
   ADMIN = "admin"
 }
 
+// signup user validation
 export const createUserSchema = object({
   body: object({
     firstName: string({
@@ -64,6 +68,7 @@ export const createUserSchema = object({
   }),
 });
 
+// login schema
 export const customerLoginSchema = object({
   body: object({
     email: string({
@@ -91,6 +96,7 @@ export const customerLoginSchema = object({
   })
 });
 
+// admin login schema
 export const adminLoginSchema = object({
   body: object({
     email: string({
@@ -118,6 +124,14 @@ export const adminLoginSchema = object({
   })
 });
 
+// validating req params fields 
+export const paramsSchema = object({
+  params: object({
+    id: string().refine((id) => isValidObjectId(id), {
+      message:  `The id is invalid`,
+    }),
+  }),
+});
 
 export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
@@ -125,3 +139,4 @@ export type CreateUserInput = Omit<
 >;
 export type AdminLoginInput = TypeOf<typeof customerLoginSchema>["body"];
 export type UserLoginInput = TypeOf<typeof adminLoginSchema>["body"];
+export type ReqParamInput = TypeOf<typeof paramsSchema>["params"];
