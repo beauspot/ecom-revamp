@@ -10,7 +10,7 @@ import { blacklistTokens } from "@/models/blacklistTokens";
 import { UserCartModel } from "@/models/cartModel";
 import { validate } from "@/middlewares/validateResource";
 import { auth, isAdmin } from "@/middlewares/authMiddleware";
-import { createUserSchema, customerLoginSchema, adminLoginSchema } from "@/validators/auth.schema";
+import { createUserSchema, customerLoginSchema, adminLoginSchema, paramsSchema } from "@/validators/auth.schema";
 
 // const authRoute = express.Router();
 
@@ -24,7 +24,6 @@ router.route("/admin-login").post(validate(adminLoginSchema), (req: Request, res
 router.route("/cart/cash-order").post(auth, (req: Request, res: Response) => UserCtrl.createOrderCtrl(req, res));
 router.route("/cart").post(auth, (req: Request, res: Response) => UserCtrl.userCartCtrl(req, res));
 router.route("/cart/applycoupon").post(auth, (req: Request, res: Response) => UserCtrl.applyCouponCtrl(req, res));
-
 
 router.route("/save-address").put(auth, (req: Request, res: Response) => UserCtrl.saveAddress(req, res));
 router.route("/wishlist").put(auth, (req: Request, res: Response) => UserCtrl.addToWishList(req, res));
@@ -40,11 +39,11 @@ router.route("/forgotpassword").post((req: Request, res: Response, next: NextFun
 router.route("/resetpassword/:token").patch((req: Request, res: Response, next: NextFunction) => UserCtrl.passwordReset(req, res, next));
 router.route("/wishlist/:id").get(auth, (req: Request, res: Response) => UserCtrl.getWishList(req, res));
 router.route("/getorderbyuser/:id").get(auth, isAdmin, (req: Request, res: Response) => UserCtrl.getOrderByUserIDController(req, res));
-router.route("/:id").get((req: Request, res: Response, next: NextFunction) => UserCtrl.getUser(req, res, next));
-router.route("/:id").delete((req: Request, res: Response, next: NextFunction) => UserCtrl.deleteUser(req, res, next));
-router.route("/:id").patch(auth, isAdmin, (req: Request, res: Response, next: NextFunction) => UserCtrl.updateuserCtrl(req, res, next));
-router.route("/block-user/:id").patch(auth, isAdmin, (req: Request, res: Response, next: NextFunction) => UserCtrl.blockUserCtrl(req, res, next));
-router.route("/unblock-user/:id").patch(auth, isAdmin, (req: Request, res: Response, next: NextFunction) => UserCtrl.UnBlockUserCtrl(req, res, next));
+router.route("/:id").get(validate(paramsSchema), (req: Request, res: Response, next: NextFunction) => UserCtrl.getUser(req, res, next));
+router.route("/:id").delete(validate(paramsSchema), (req: Request, res: Response, next: NextFunction) => UserCtrl.deleteUser(req, res, next));
+router.route("/:id").patch(auth, isAdmin, validate(paramsSchema),(req: Request, res: Response, next: NextFunction) => UserCtrl.updateuserCtrl(req, res, next));
+router.route("/block-user/:id").patch(auth, isAdmin, validate(paramsSchema), (req: Request, res: Response, next: NextFunction) => UserCtrl.blockUserCtrl(req, res, next));
+router.route("/unblock-user/:id").patch(auth, isAdmin, validate(paramsSchema), (req: Request, res: Response, next: NextFunction) => UserCtrl.UnBlockUserCtrl(req, res, next));
 router.route("/order/update-order/:id").put(auth, isAdmin, (req: Request, res: Response) => UserCtrl.UpdateOrderStatusController(req, res));
 
 export default router;
