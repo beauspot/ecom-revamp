@@ -1,35 +1,64 @@
-import express from "express";
-import { auth, isAdmin } from "@/middlewares/authMiddleware";
-import {
-  create_product,
-  updateSingleProduct,
-  deleteProduct,
-  get_all_products,
-  getASingleProduct,
-  rateProduct,
-  uploadImageCtrl,
-} from "@/controllers/productCtrls";
+import { Router, Request, Response, NextFunction } from "express";
 
+import { productModel } from "@/models/productsModels";
+import { validate } from "@/middlewares/validateResource";
+import { ProductService } from "@/services/product.service";
+import { createProductSchema } from "@/validators/products.schema";
+import { auth, isAdmin } from "@/middlewares/authMiddleware";
+import { ProductController } from "@/controllers/productCtrls";
 import { uploadPhoto, productImageResize } from "@/middlewares/uploadImages";
 
-const productRoute = express.Router();
+let router = Router();
+let productService = new ProductService(productModel);
+let productController = new ProductController(productService);
 
-productRoute.get("/allproducts", get_all_products);
-productRoute.get("/:id", getASingleProduct);
-productRoute.put(
-  "/upload/:id",
-  auth,
-  isAdmin,
-  uploadPhoto.array("images", 10),
-  productImageResize,
-  uploadImageCtrl
-);
-productRoute.put("/rateproduct", auth, rateProduct);
+// TODO: setup validation middleware and validate the req.body, .params, & . query
 
-productRoute.use(auth, isAdmin);
+router
+  .route("/allproducts")
+  .get((req: Request, res: Response, next: NextFunction) =>
+    productController.get_all_products(req, res, next)
+  );
+router
+  .route("/:id")
+  .get((req: Request, res: Response, next: NextFunction) =>
+    productController.getASingleProduct(req, res, next)
+  );
+router
+  .route("/upload/:id")
+  .put(
+    auth,
+    isAdmin,
+    uploadPhoto.array("image", 10),
+    productImageResize,
+    (req: Request, res: Response, next: NextFunction) =>
+      productController.uploadImageCtrl(req, res, next)
+  );
 
-productRoute.post("/createproduct", create_product);
-productRoute.patch("/:id", updateSingleProduct);
-productRoute.delete("/:id", deleteProduct);
+router
+  .route("/rateproduct")
+  .put(auth, (req: Request, res: Response, next: NextFunction) =>
+    productController.rateProduct(req, res)
+  );
 
-export default productRoute;
+router.use(auth, isAdmin);
+
+router
+  .route("/createproduct")
+  .post(
+    validate(createProductSchema),
+    (req: Request, res: Response, next: NextFunction) =>
+      productController.create_product(req, res, next)
+  );
+router
+  .route("/:id")
+  .patch((req: Request, res: Response, next: NextFunction) =>
+    productController.updateSingleProduct(req, res, next)
+  );
+router
+  .route("/:id")
+  .delete((req: Request, res: Response, next: NextFunction) =>
+    productController.deleteProduct(req, res, next)
+  );
+
+export default router;

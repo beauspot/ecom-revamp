@@ -1,30 +1,33 @@
-import { StatusCodes } from "http-status-codes";
+import fs from "fs";
+import { Service, Inject } from "typedi";
 import { UploadedFile } from "express-fileupload";
+
+import logger from "@/utils/logger";
 import { productModel } from "@/models/productsModels";
-import { authModel } from "@/models/userModels";
-import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
-import {
-  ProductDataInterface,
-  GetAllProductsOptions,
-} from "@/interfaces/product_Interface"; // Import ProductDataInterface
-import { cloudinaryUpload } from "@/config/cloudinaryconfig";
 import { FileWithNewPath } from "@/interfaces/filePath";
 import { Paginated } from "@/interfaces/paginatedInterface";
-import fs from "fs";
+import { cloudinaryUpload } from "@/config/cloudinaryconfig";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
+import { ProductDataInterface, GetAllProductsOptions } from "@/interfaces/product_Interface";
 
-//Create a Product Service
-export const createProductService = async (product: ProductDataInterface) => {
-  const newProduct = await productModel.create({ ...product });
-  if (!newProduct) {
+
+@Service()
+export class ProductService {
+  
+  constructor(@Inject(() => productModel) private product: typeof productModel) { }
+  
+  //Create a Product Service
+  createProductService = async (product: ProductDataInterface) => {
+  const newProduct = await this.product.create({ ...product });
+  if (!newProduct) 
     throw new ServiceAPIError (
       "Product creation failed"
     );
-  }
   return newProduct;
-};
-
-// Fetch All Products Services
-export const getAllProductsService = async (
+  };
+  
+  // Fetch All Products Services
+getAllProductsService = async (
   options: GetAllProductsOptions
 ): Promise<Paginated<ProductDataInterface>> => {
   // Sorting, limiting and pagination of the Products
@@ -44,7 +47,7 @@ export const getAllProductsService = async (
     query.brand = brand;
   }
 
-  const allProducts = await productModel
+  const allProducts = await this.product
     .find(query)
     .sort(sortCriteria)
     .skip(skip)
@@ -54,7 +57,7 @@ export const getAllProductsService = async (
   if (allProducts.length <= 0) {
     throw new ServiceAPIError ("No products found");
   }
-  const productsCount: number = await productModel.find(query).count();
+  const productsCount: number = await this.product.find(query).count();
 
   return {
     page: allProducts,
@@ -63,9 +66,10 @@ export const getAllProductsService = async (
     total: productsCount,
   };
 };
-// Get a single product by its ID Service
-export const getSingleProductService = async (productID: string) => {
-  const productExists = await productModel.findById({ _id: productID });
+
+  // Get a single product by its ID Service
+  getSingleProductService = async (productID: string) => {
+  const productExists = await this.product.findById({ _id: productID });
   // console.log(productExists);
   if (!productExists) {
     throw new ServiceAPIError (
@@ -76,12 +80,12 @@ export const getSingleProductService = async (productID: string) => {
 };
 
 // updating a product Service
-export const updateProductService = async (
+updateProductService = async (
   prodId: string,
   updateData: Partial<ProductDataInterface>
 ) => {
   // const { _id } = prodId;
-  const updateProduct = await productModel.findByIdAndUpdate(
+  const updateProduct = await this.product.findByIdAndUpdate(
     { _id: prodId },
     updateData,
     {
@@ -97,85 +101,87 @@ export const updateProductService = async (
   return updateProduct;
 };
 
-// Deleting a product Service
-export const deleteProductService = async (prodID: string) => {
-  const product = await productModel.findOneAndDelete({ _id: prodID });
+  // Deleting a product Service
+  deleteProductService = async (prodID: string) => {
+  const product = await this.product.findOneAndDelete({ _id: prodID });
   // console.log(product);
   if (!product)
     throw new ServiceAPIError (
       `The Product with the id: ${prodID} was not found to be deleted`
     );
   return product;
-};
-
-export const rateProductService = async (
-  userID: string,
-  prodID: string,
-  star: number,
-  comment: string
-) => {
-  try {
-    const product = await productModel.findById(prodID);
-    if (!product) {
-      throw new ServiceAPIError (`Product not found`);
-    }
-    let alreadyRated = product.ratings.find(
-      (rating) => rating.postedBy.toString() === userID
-    );
-    if (alreadyRated) {
-      await productModel.updateOne(
-        {
-          "ratings.postedBy": userID,
-        },
-        {
-          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
-        }
+  };
+  
+  rateProductService = async (
+    userID: string,
+    prodID: string,
+    star: number,
+    comment: string
+  ) => {
+    try {
+      const product = await this.product.findById(prodID);
+      if (!product) {
+        throw new ServiceAPIError (`Product not found`);
+      }
+      let alreadyRated = product.ratings.find(
+        (rating) => rating.postedBy.toString() === userID
       );
-    } else {
-      await productModel.findByIdAndUpdate(prodID, {
-        $push: {
-          ratings: {
-            star: star,
-            comment: comment,
-            postedBy: userID,
+      if (alreadyRated) {
+        await this.product.updateOne(
+          {
+            "ratings.postedBy": userID,
           },
+          {
+            $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+          }
+        );
+      } else {
+        await this.product.findByIdAndUpdate(prodID, {
+          $push: {
+            ratings: {
+              star: star,
+              comment: comment,
+              postedBy: userID,
+            },
+          },
+        });
+      }
+      const getAllRatings = await this.product.findById(prodID);
+      if (!getAllRatings) {
+        throw new ServiceAPIError (`Ratings not found`);
+      }
+      let totalRating = getAllRatings.ratings.length;
+      let ratingsum =
+        totalRating === 0
+          ? 0
+          : getAllRatings.ratings
+              .map((item) => item.star)
+              .reduce((prev, curr) => prev + curr, 0);
+      let actualRating =
+        totalRating === 0 ? 0 : Math.round(ratingsum / totalRating);
+  
+      const finalproduct = await this.product.findByIdAndUpdate(
+        prodID,
+        {
+          totalrating: actualRating,
         },
-      });
+        { new: true }
+      );
+      return finalproduct;
+    } catch (err: any) {
+      throw new ServiceAPIError(err.message);
     }
-    const getAllRatings = await productModel.findById(prodID);
-    if (!getAllRatings) {
-      throw new ServiceAPIError (`Ratings not found`);
-    }
-    let totalRating = getAllRatings.ratings.length;
-    let ratingsum =
-      totalRating === 0
-        ? 0
-        : getAllRatings.ratings
-            .map((item) => item.star)
-            .reduce((prev, curr) => prev + curr, 0);
-    let actualRating =
-      totalRating === 0 ? 0 : Math.round(ratingsum / totalRating);
+  };
 
-    const finalproduct = await productModel.findByIdAndUpdate(
-      prodID,
-      {
-        totalrating: actualRating,
-      },
-      { new: true }
-    );
-    return finalproduct;
-  } catch (err: any) {
-    throw new Error(err.message);
-  }
-};
-
-export const uploadImageService = async (
+  uploadImageService = async (
   id: string,
   files: Record<string, UploadedFile | UploadedFile[]>
 ): Promise<any> => {
   try {
     const uploader = async (path: string): Promise<FileWithNewPath> => {
+      logger.info(`Uploading file from path: ${path}`);
       const result = await cloudinaryUpload(path);
+      logger.info(`File uploaded successfully: ${result.url}`);
       return { path, url: result.url };
     };
     const urls: string[] = [];
@@ -191,7 +197,7 @@ export const uploadImageService = async (
         fs.unlinkSync(path);
       }
     }
-    const findproduct = await productModel.findByIdAndUpdate(
+    const findproduct = await this.product.findByIdAndUpdate(
       id,
       {
         images: urls.map((file) => {
@@ -205,6 +211,8 @@ export const uploadImageService = async (
     return findproduct;
   } catch (error: any) {
     console.error(error);
-    throw new Error(error.message);
+    throw new ServiceAPIError(error.message);
   }
+};
+
 };

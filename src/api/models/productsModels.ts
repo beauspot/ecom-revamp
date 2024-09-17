@@ -50,7 +50,7 @@ const productSchema = new Schema<ProductDataInterface>({
     {
       star: Number,
       comment: String,
-      postedBy: { type: Schema.Types.ObjectId, ref: "UserModel" },
+      postedBy: { type: Schema.Types.ObjectId, ref: "Usermodel" },
     },
     { timestamps: true },
   ],

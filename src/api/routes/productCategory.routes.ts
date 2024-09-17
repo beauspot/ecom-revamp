@@ -1,23 +1,35 @@
-import express from "express";
-import {
-  createNewCategory,
-  getAllCategory,
-  getSingleCategory,
-  updateSingleCategory,
-  delete_category,
-} from "@/controllers/prod_category.controllers";
+import { Router, Request, Response, NextFunction } from "express";
+
 import { auth, isAdmin } from "@/middlewares/authMiddleware";
-const router = express.Router();
+import ProductCategoryModel from "@/models/Prod_categoryModels";
+import { ProductCategoryService } from "@/services/ProdCat.service";
+import { ProductCategoryCtrl } from "@/controllers/prod_category.controllers";
+
+let router = Router();
+let product_cat_service = new ProductCategoryService(ProductCategoryModel);
+let product_cat_ctrl = new ProductCategoryCtrl(product_cat_service);
+
+router.use(auth, isAdmin);
 
 router
   .route("/category")
-  .get(auth, isAdmin, getAllCategory)
-  .post(auth, isAdmin, createNewCategory);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    product_cat_ctrl.getAllCategory(req, res, next)
+  )
+  .post((req: Request, res: Response, next: NextFunction) =>
+    product_cat_ctrl.createNewCategory(req, res, next)
+  );
 
 router
   .route("/category/:id")
-  .get(auth, isAdmin, getSingleCategory)
-  .patch(auth, isAdmin, updateSingleCategory)
-  .delete(auth, isAdmin, delete_category);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    product_cat_ctrl.getSingleCategory(req, res, next)
+  )
+  .patch((req: Request, res: Response, next: NextFunction) =>
+    product_cat_ctrl.updateSingleCategory(req, res, next)
+  )
+  .delete((req: Request, res: Response, next: NextFunction) =>
+    product_cat_ctrl.delete_category(req, res, next)
+  );
 
 export default router;
