@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import asyncHandler from "express-async-handler";
 import { plainToInstance } from "class-transformer";
-import { Service, Inject, Container } from "typedi";
+import { Service, Inject } from "typedi";
 
 import logger from "@/utils/logger";
 import { generateRefreshToken } from "@/helpers/utils/refreshToken";
