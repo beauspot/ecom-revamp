@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 
+import logger from "@/utils/logger"
 import { authModel } from "@/models/userModels";
 import UnauthenticatedError from "@/helpers/utils/unauthenticated";
 import { AuthenticatedRequest } from "@/interfaces/authenticateRequest";
@@ -23,15 +24,16 @@ export const auth = asyncHandler(
     let token;
     if (req?.headers?.authorization?.startsWith("Bearer ")) {
       token = req.headers.authorization.split(" ")[1];
-      // console.log("token Data: ", token);
-      // console.log("Request User Data: ", req.user);
+      // logger.info("token Data: ", token);
+      // logger.info("Request User Data: ", req.user);
       try {
         if (token) {
           const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+          // logger.info(decoded.id);
           if (isJwtPayload(decoded)) {
-            console.log(decoded.id);
+            logger.info(decoded.id);
           }
-          const user = await authModel.findById(decoded.userId);
+          const user = await authModel.findById(decoded.id);
           // TODO: what happens if user is undefined
           if (!lodash.isUndefined(user)) {
             req.user = { id: user?.id };
@@ -64,10 +66,10 @@ export const isAdmin = asyncHandler(
     const { user } = req;
     if (user) {
       const { id } = user;
-      // console.log("User ->>>", user);
-      // console.log("UserID ->>>", id);
+      // logger.info("User ->>>", user);
+      // logger.info("UserID ->>>", id);
       const adminUser = await authModel.findOne({ id });
-      // console.log(adminUser);
+      // logger.info(adminUser);
       if (adminUser && adminUser.role !== "admin")
         throw new UnauthenticatedError(
           "You are not an an administrator",
