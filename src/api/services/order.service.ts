@@ -1,19 +1,28 @@
+import {Inject, Service} from "typedi";
+
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 import { UserOrderModel } from "@/models/orderModel";
 import { productModel } from "@/models/productsModels";
+import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
 import {
   CreateOrderParams,
   OrderInterface,
 } from "@/interfaces/order_interface";
 
+@Service()
 export class OrderService {
-  public static async create(data: CreateOrderParams): Promise<any> {
+  constructor(
+    @Inject(() => UserOrderModel) private ordermodel: typeof UserOrderModel,
+    @Inject(() => productModel) private productmodel: typeof productModel
+  ) {}
+
+  async create(data: CreateOrderParams): Promise<any> {
     try {
       const productIds: string[] = data.products.map(
         (product) => product.product
       );
 
-      const products = await productModel.find({ _id: { $in: productIds } });
+      const products = await this.productmodel.find({ _id: { $in: productIds } });
 
       // TODO: Handle if a product in the createorderparams is not found
       // throw error or just return the one that were found
@@ -22,7 +31,7 @@ export class OrderService {
         return { ...product, price: detailedProduct?.price };
       });
 
-      const order = await UserOrderModel.create({
+      const order = await this.ordermodel.create({
         ...data,
         products: hydratedProducts,
       });
@@ -32,19 +41,19 @@ export class OrderService {
         0
       );
       return { order, totalCost };
-    } catch (error) {
-      throw new Error("Error creating order");
+    } catch (error: any) {
+      throw new ServiceAPIError("Error creating order");
     }
   }
 
-  public static async findAllByUserId(
+  async findAllByUserId(
     userId: string
   ): Promise<OrderInterface[]> {
     try {
-      const orders = await UserOrderModel.find({ orderby: userId }).exec();
+      const orders = await this.ordermodel.find({ orderby: userId }).exec();
       return orders;
-    } catch (error) {
-      throw new Error("Error fetching orders");
+    } catch (error: any) {
+      throw new ServiceAPIError("Error fetching orders");
     }
   }
 }

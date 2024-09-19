@@ -1,12 +1,22 @@
-import express from "express";
+import { Router, Request, Response, NextFunction } from "express";
+
 import { auth } from "@/middlewares/authMiddleware";
-import OrderController from "@/controllers/order.controller";
+import { UserOrderModel } from "@/models/orderModel";
+import { productModel } from "@/models/productsModels";
+import { OrderService } from "@/services/order.service";
+import { OrderController } from "@/controllers/order.controller";
 
-const orderRouter = express.Router();
+const router = Router();
+let orderservice = new OrderService(UserOrderModel, productModel);
+let orderctrl = new OrderController(orderservice);
 
-orderRouter.use(auth);
+router.use(auth);
 
-orderRouter.post("/", OrderController.createOrder);
-orderRouter.get("/", OrderController.getOrders);
+router
+  .route("/")
+  .post((req: Request, res: Response, next: NextFunction) =>
+    orderctrl.createOrder(req, res)
+  )
+  .get((req: Request, res: Response) => orderctrl.getOrders(req, res));
 
-export default orderRouter;
+export default router;
