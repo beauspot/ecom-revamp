@@ -1,23 +1,35 @@
-import express from "express";
-import {
-  createNewCategory,
-  getAllCategory,
-  getSingleCategory,
-  updateSingleCategory,
-  delete_category,
-} from "@/controllers/blog_category.controllers";
+import { Router, Request, Response, NextFunction } from "express";
+
+import BlogCategoryModel from "@/models/Blog_categoryModels";
+import { BlogCatService } from "../services/blogCat.service";
 import { auth, isAdmin } from "@/middlewares/authMiddleware";
-const router = express.Router();
+import { BlogCatCtrl } from "@/controllers/blog_category.controllers";
+
+const router = Router();
+let blogcatservice = new BlogCatService(BlogCategoryModel);
+let blogctrl = new BlogCatCtrl(blogcatservice);
+
+router.use(auth, isAdmin);
 
 router
   .route("/category")
-  .get(auth, isAdmin, getAllCategory)
-  .post(auth, isAdmin, createNewCategory);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    blogctrl.getAllCategory(req, res, next)
+  )
+  .post((req: Request, res: Response, next: NextFunction) =>
+    blogctrl.createNewCategory(req, res, next)
+  );
 
 router
   .route("/category/:id")
-  .get(auth, isAdmin, getSingleCategory)
-  .patch(auth, isAdmin, updateSingleCategory)
-  .delete(auth, isAdmin, delete_category);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    blogctrl.getSingleCategory(req, res, next)
+  )
+  .patch((req: Request, res: Response, next: NextFunction) =>
+    blogctrl.updateSingleCategory(req, res, next)
+  )
+  .delete((req: Request, res: Response, next: NextFunction) =>
+    blogctrl.delete_category(req, res, next)
+  );
 
 export default router;
