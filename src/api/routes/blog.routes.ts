@@ -1,34 +1,66 @@
-import express from "express";
+import { Router, Request, Response, NextFunction } from "express";
+
+import { BlogModel } from "@/models/blogModel";
+import { BlogService } from "@/services/blog.service";
 import { auth, isAdmin } from "@/middlewares/authMiddleware";
+import { BlogsController } from "@/controllers/blog.controllers";
 import { uploadPhoto, blogImageResize } from "@/middlewares/uploadImages";
-import {
-  create_new_blog,
-  update_blog,
-  get_single_blog,
-  getallBlogs,
-  deleteblog,
-  likeBlogController,
-  dislikeBlogController,
-  uploadBlogImageCtrl,
-} from "@/controllers/blog.controllers";
 
-const router = express.Router();
+const router = Router();
+let blogservice = new BlogService(BlogModel);
+let blogctrl = new BlogsController(blogservice);
 
-router.post("/posts", auth, isAdmin, create_new_blog);
-router.patch("/posts/:id", auth, isAdmin, update_blog);
-router.get("/posts/:id", auth, get_single_blog);
-router.get("/posts", auth, getallBlogs);
-router.delete("/posts/:id", auth, isAdmin, deleteblog);
-router.put("/likes", auth, likeBlogController);
-router.put("/dislikes", auth, dislikeBlogController);
-router.put(
-  "/upload/:id",
-  auth,
-  isAdmin,
-  uploadPhoto.array("images", 10),
-  blogImageResize,
-  uploadBlogImageCtrl
-);
+router
+  .route("/posts")
+  .get(auth, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.getallBlogs(req, res, next)
+  );
 
+router
+  .route("/posts")
+  .post(auth, isAdmin, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.create_new_blog(req, res, next)
+  );
+
+router
+  .route("/posts/:id")
+  .patch(auth, isAdmin, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.update_blog(req, res, next)
+  );
+
+router
+  .route("/posts/:id")
+  .get(auth, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.get_single_blog(req, res, next)
+  );
+
+router
+  .route("/posts/:id")
+  .delete(auth, isAdmin, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.deleteblog(req, res, next)
+  );
+
+router
+  .route("/likes")
+  .put(auth, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.likeBlogController(req, res)
+  );
+
+router
+  .route("/dislikes")
+  .put(auth, (req: Request, res: Response, next: NextFunction) =>
+    blogctrl.dislikeBlogController(req, res)
+  );
+  
+router
+  .route("/upload/:id")
+  .put(
+    auth,
+    isAdmin,
+    uploadPhoto.array("image", 10),
+    blogImageResize,
+    (req: Request, res: Response, next: NextFunction) =>
+      blogctrl.uploadBlogImageCtrl(req, res, next)
+  );
 
 export default router;
