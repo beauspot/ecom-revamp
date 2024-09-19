@@ -1,65 +1,72 @@
+import { Service, Inject } from "typedi";
 import { StatusCodes } from "http-status-codes";
+
 import { BrandModel } from "@/models/brands.models";
-import {ServiceAPIError}  from "@/helpers/utils/custom-errors";
-import { validateMongoDbID } from "../helpers/utils/validateDbId";
 import { BrandInterface } from "@/interfaces/brand.interface";
+import { ServiceAPIError } from "@/helpers/utils/custom-errors";
+import { validateMongoDbID } from "../helpers/utils/validateDbId";
 
-export const createBrandService = async (category: BrandInterface) => {
-  const newBrand = await BrandModel.create({ ...category });
-  if (!newBrand) {
-    throw new ServiceAPIError (
-      "Could not create Category"
-    );
-  }
-  return newBrand;
-};
+@Service()
+export class BrandService {
+  constructor(
+    @Inject(() => BrandModel) private brandmodel: typeof BrandModel
+  ) {}
 
-export const updateBrandService = async (
-  brandID: string,
-  brandData: Partial<BrandInterface>
-) => {
-  const updateBrand = await BrandModel.findByIdAndUpdate(
-    { _id: brandID },
-    brandData,
-    {
-      new: true,
-      runValidators: true,
+  createBrandService = async (category: BrandInterface) => {
+    const newBrand = await this.brandmodel.create({ ...category });
+    if (!newBrand) {
+      throw new ServiceAPIError("Could not create Category");
     }
-  );
-  validateMongoDbID(brandID);
-  if (!updateBrand)
-    throw new ServiceAPIError (
-      `The Category ${brandID} was not found to be updated`
-    );
-  return updateBrand;
-};
+    return newBrand;
+  };
 
-export const deleteBrandService = async (brandID: string) => {
-  const brandd = await BrandModel.findOneAndDelete({
-    _id: brandID,
-  });
-  validateMongoDbID(brandID);
-  if (!brandd)
-    throw new ServiceAPIError (
-      `The Category with the id: ${brandID} was not found to be deleted`
+  updateBrandService = async (
+    brandID: string,
+    brandData: Partial<BrandInterface>
+  ) => {
+    const updateBrand = await this.brandmodel.findByIdAndUpdate(
+      { _id: brandID },
+      brandData,
+      {
+        new: true,
+        runValidators: true,
+      }
     );
-  return brandd;
-};
+    validateMongoDbID(brandID);
+    if (!updateBrand)
+      throw new ServiceAPIError(
+        `The Category ${brandID} was not found to be updated`
+      );
+    return updateBrand;
+  };
 
-export const getBrandService = async (brand: string) => {
-  const brandExists = await BrandModel.findById({ _id: brand });
-  validateMongoDbID(brand);
-  if (!brandExists)
-    throw new ServiceAPIError (
-      `The Product with the id: ${brand} does not exist`
-    );
-  return brandExists;
-};
+  deleteBrandService = async (brandID: string) => {
+    const brandd = await this.brandmodel.findOneAndDelete({
+      _id: brandID,
+    });
+    validateMongoDbID(brandID);
+    if (!brandd)
+      throw new ServiceAPIError(
+        `The Category with the id: ${brandID} was not found to be deleted`
+      );
+    return brandd;
+  };
 
-export const getAllBrandService = async (): Promise<BrandInterface[]> => {
-  const getAllBrands = await BrandModel.find();
-  if (getAllBrands.length <= 0) {
-    throw new ServiceAPIError (`No category found`);
-  }
-  return getAllBrands;
-};
+  getBrandService = async (brand: string) => {
+    const brandExists = await this.brandmodel.findById({ _id: brand });
+    validateMongoDbID(brand);
+    if (!brandExists)
+      throw new ServiceAPIError(
+        `The Product with the id: ${brand} does not exist`
+      );
+    return brandExists;
+  };
+
+  getAllBrandService = async (): Promise<BrandInterface[]> => {
+    const getAllBrands = await this.brandmodel.find();
+    if (getAllBrands.length <= 0) {
+      throw new ServiceAPIError(`No category found`);
+    }
+    return getAllBrands;
+  };
+}
