@@ -1,68 +1,75 @@
-import { ColorDataModel } from "@/models/colorModel";
-import { validateMongoDbID } from "@/helpers/utils/validateDbId";
-import { IColor } from "@/interfaces/colorInterface";
+import {Service, Inject} from "typedi";
 
+import { ColorDataModel } from "@/models/colorModel";
+import { IColor } from "@/interfaces/colorInterface";
+import { ServiceAPIError } from "@/utils/custom-errors";
+import { validateMongoDbID } from "@/helpers/utils/validateDbId";
+
+@Service()
 export class ProductColorService {
-  public static async createColor(colorData: IColor): Promise<IColor> {
+
+  constructor(@Inject(() => ColorDataModel) private colordata: typeof ColorDataModel){};
+
+  async createColor(colorData: IColor): Promise<IColor> {
     try {
-      const newColor = await ColorDataModel.create(colorData);
-      if (!newColor) throw new Error(`The Color ${newColor} already exists.`);
+      const newColor = await this.colordata.create(colorData);
+      if (!newColor) throw new ServiceAPIError(`The Color ${newColor} already exists.`);
       return newColor;
-    } catch (error) {
-      throw new Error("Error creating color");
+    } catch (error:any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async getAllColors(): Promise<IColor[]> {
+  async getAllColors(): Promise<IColor[]> {
     try {
-      const colors = await ColorDataModel.find();
-      if (colors.length <= 0) throw new Error("There are no colors available");
+      const colors = await this.colordata.find();
+      if (colors.length <= 0) throw new ServiceAPIError("There are no colors available");
 
       return colors;
-    } catch (error) {
-      throw new Error("Error getting colors");
+    } catch (error:any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async updateColor(
+  async updateColor(
     colorId: string,
     updatedData: IColor
   ): Promise<IColor | null> {
     try {
       validateMongoDbID(colorId);
-      const updatedColor = await ColorDataModel.findByIdAndUpdate(
+      const updatedColor = await this.colordata.findByIdAndUpdate(
         colorId,
         updatedData,
         { new: true }
       );
       return updatedColor;
-    } catch (error) {
-      throw new Error("Error updating color");
+    } catch (error:any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async getColorId(colorId: string): Promise<IColor | null> {
+ async getColorId(colorId: string): Promise<IColor | null> {
     try {
       validateMongoDbID(colorId);
-      const color = await ColorDataModel.findById(colorId);
+      const color = await this.colordata.findById(colorId);
       if (!color)
-        throw new Error("The Color with the ID " + colorId + "doesn't exist");
+        throw new ServiceAPIError("The Color with the ID " + colorId + "doesn't exist");
       return color;
-    } catch (error) {
-      throw new Error("Error getting color by ID");
+    } catch (error:any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async deleteColor(colorID: string): Promise<void> {
+  async deleteColor(colorID: string): Promise<void> {
     try {
       validateMongoDbID(colorID);
-      const deleteColor = await ColorDataModel.findByIdAndDelete(colorID);
+      const deleteColor = await this.colordata.findByIdAndDelete(colorID);
       if (!deleteColor)
-        throw new Error(
+        throw new ServiceAPIError(
           `Couldn't find color with the ID of ${colorID} to delete`
         );
-    } catch (error) {
-      throw new Error("Error deleting color");
+    } catch (error:any) {
+      throw new ServiceAPIError(error.message);
     }
   }
-}
+};

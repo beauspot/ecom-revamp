@@ -1,20 +1,35 @@
-import { ProductColorController } from "@/controllers/colorCtrl";
+import { Router, Request, Response, NextFunction } from "express";
+
+import { ColorDataModel } from "@/models/colorModel";
 import { auth, isAdmin } from "@/middlewares/authMiddleware";
-import express from "express";
+import { ProductColorService } from "@/services/color.service";
+import { ProductColorController } from "@/controllers/colorCtrl";
 
-const colorRoute = express.Router();
+const router = Router();
+let colorservice = new ProductColorService(ColorDataModel);
+let colorctrl = new ProductColorController(colorservice);
 
-colorRoute.use(auth, isAdmin);
+router.use(auth, isAdmin);
 
-colorRoute
+router
   .route("/")
-  .get(ProductColorController.getAllColors)
-  .post(ProductColorController.createColor);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    colorctrl.getAllColors(req, res)
+  )
+  .post((req: Request, res: Response, next: NextFunction) =>
+    colorctrl.createColor(req, res)
+  );
 
-colorRoute
+router
   .route("/:id")
-  .get(ProductColorController.getColorByID)
-  .patch(ProductColorController.updateColor)
-  .delete(ProductColorController.deleteColor);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    colorctrl.getColorByID(req, res)
+  )
+  .patch((req: Request, res: Response, next: NextFunction) =>
+    colorctrl.updateColor(req, res)
+  )
+  .delete((req: Request, res: Response, next: NextFunction) =>
+    colorctrl.deleteColor(req, res)
+  );
 
-export default colorRoute;
+export default router;
