@@ -1,69 +1,80 @@
+import { Inject, Service } from "typedi";
+
+import { ServiceAPIError } from "@/utils/custom-errors";
 import { EnquiryDataModel } from "@/models/enqModel";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 import { IEnquiry } from "@/interfaces/enquiryInterface";
 
+@Service()
 export class EnquiryService {
-  public static async createEnquiry(enqData: IEnquiry): Promise<IEnquiry> {
+  constructor(
+    @Inject(() => EnquiryDataModel)
+    private enquirymodel: typeof EnquiryDataModel
+  ) {}
+
+  async createEnquiry(enqData: IEnquiry): Promise<IEnquiry> {
     try {
-      const newEnquiry = await EnquiryDataModel.create(enqData);
+      const newEnquiry = await this.enquirymodel.create(enqData);
       if (!newEnquiry)
-        throw new Error(`The enquiry ${newEnquiry} already exists`);
+        throw new ServiceAPIError(`The enquiry ${newEnquiry} already exists`);
       return newEnquiry;
-    } catch (error) {
-      throw new Error("Error creating enquiry");
+    } catch (error: any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async getAllEnq(): Promise<IEnquiry[]> {
+  async getAllEnq(): Promise<IEnquiry[]> {
     try {
-      const enquiry = await EnquiryDataModel.find();
+      const enquiry = await this.enquirymodel.find();
       if (enquiry.length <= 0)
-        throw new Error("There are no enquieries available");
+        throw new ServiceAPIError("There are no enquieries available");
       return enquiry;
-    } catch (error) {
-      throw new Error("Error getting colors");
+    } catch (error: any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async updateEnquiry(
+  async updateEnquiry(
     enqID: string,
     updatedData: IEnquiry
   ): Promise<IEnquiry | null> {
     try {
       validateMongoDbID(enqID);
-      const enqData = await EnquiryDataModel.findByIdAndUpdate(
+      const enqData = await this.enquirymodel.findByIdAndUpdate(
         enqID,
         updatedData,
         { new: true }
       );
       return enqData;
-    } catch (error) {
-      throw new Error("Error updating Enquiry");
+    } catch (error: any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async getEnqId(enqID: string): Promise<IEnquiry | null> {
+  async getEnqId(enqID: string): Promise<IEnquiry | null> {
     try {
       validateMongoDbID(enqID);
-      const enq = await EnquiryDataModel.findById(enqID);
+      const enq = await this.enquirymodel.findById(enqID);
       if (!enq)
-        throw new Error(`The Enquiry with the ID ${enqID} doesn't exist`);
+        throw new ServiceAPIError(
+          `The Enquiry with the ID ${enqID} doesn't exist`
+        );
       return enq;
-    } catch (error) {
-      throw new Error("Error getting enquiry");
+    } catch (error: any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 
-  public static async deleteEnq(enqID: string): Promise<void> {
+  async deleteEnq(enqID: string): Promise<void> {
     try {
       validateMongoDbID(enqID);
-      const deleteEnquiry = await EnquiryDataModel.findByIdAndDelete(enqID);
+      const deleteEnquiry = this.enquirymodel.findByIdAndDelete(enqID);
       if (!deleteEnquiry)
-        throw new Error(
+        throw new ServiceAPIError(
           `Couldn't find the enquiry with ID of ${enqID} to delete`
         );
-    } catch (error) {
-      throw new Error("Error deleting the enquiry");
+    } catch (error: any) {
+      throw new ServiceAPIError(error.message);
     }
   }
 }

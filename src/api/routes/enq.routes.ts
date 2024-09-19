@@ -1,20 +1,31 @@
+import { Router, Request, Response, NextFunction } from "express";
+
+import { EnquiryDataModel } from "@/models/enqModel";
+import { EnquiryService } from "@/services/enq.service";
 import { EnquiryController } from "@/controllers/enqCtrl";
 import { auth, isAdmin } from "@/middlewares/authMiddleware";
-import express from "express";
 
-const enqRoute = express.Router();
+const router = Router();
+let enquiryService = new EnquiryService(EnquiryDataModel);
+let enquiryctrl = new EnquiryController(enquiryService);
 
-enqRoute.use(auth, isAdmin);
+router.use(auth, isAdmin);
 
-enqRoute
+router
   .route("/")
-  .get(EnquiryController.getAllEnquiries)
-  .post(EnquiryController.createEnq);
+  .get((req: Request, res: Response, next: NextFunction) =>
+    enquiryctrl.getAllEnquiries(req, res, next)
+  )
+  .post((req: Request, res: Response, next: NextFunction) =>
+    enquiryctrl.createEnq(req, res, next)
+  );
 
-enqRoute
-  .route("/:id")
-  .get(EnquiryController.getEnqByID)
-  .patch(EnquiryController.updateEnq)
-  .delete(EnquiryController.deleteEnqData);
+router.route("/:id")
+  .get((req: Request, res: Response, next: NextFunction) =>
+  enquiryctrl.getEnqByID(req, res, next))
+  .patch((req: Request, res: Response, next: NextFunction) => 
+  enquiryctrl.updateEnq(req, res, next))
+  .delete((req: Request, res: Response, next: NextFunction) => 
+  enquiryctrl.deleteEnqData(req, res, next));
 
-export default enqRoute;
+export default router;
