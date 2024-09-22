@@ -119,7 +119,6 @@ export class EcomApp {
 
     this.app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
       res.status(500).send(err.message);
-      next();
     })
     
     this.app.use(errorHandlerMiddleware);

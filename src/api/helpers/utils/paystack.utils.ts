@@ -6,7 +6,7 @@
 
 import dotenv from "dotenv";
 import axios from "axios";
-import { InitializePaymentInput } from "../types/payment_init";
+import { InitializePaymentInput } from "@/types/payment_init";
 
 dotenv.config();
 

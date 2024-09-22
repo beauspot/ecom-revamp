@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi";
 import { validateMongoDbID } from "@/helpers/utils/validateDbId";
 
 import ProductCategoryModel from "@/models/Prod_categoryModels";
-import {ServiceAPIError } from "@/helpers/utils/custom-errors";
+import { ServiceAPIError } from "@/helpers/utils/custom-errors";
 import { ProductCategoryInterface } from "@/interfaces/prod_category_interface";
 
 
@@ -71,13 +71,9 @@ export class ProductCategoryService {
   const getAllCategories = await this.productCatModel.find();
 
   if (getAllCategories.length <= 0) {
-    throw new ServiceAPIError (`No category found`);
+    throw new ServiceAPIError (`No Product category found`);
   };
   
   return getAllCategories;
  };
 };
-
-
-
-

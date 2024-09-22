@@ -1,8 +1,14 @@
-import { UserOrderModel } from "@/models/orderModel";
 import axios from "axios";
+import { Service, Inject } from "typedi";
+import { UserOrderModel } from "@/models/orderModel";
 
+@Service()
 export class PaymentService {
-  public static async verify(reference: string) {
+  constructor(
+    @Inject(() => UserOrderModel) private userOrders: typeof UserOrderModel
+  ) {}
+
+  async verify(reference: string) {
     try {
       const response = await axios.get(
         `https://api.paystack.co/transaction/verify/${reference}`,
@@ -22,7 +28,7 @@ export class PaymentService {
 
       const orderId = response.data.data.metadata.custom_fields[0].orderId;
 
-      const order = await UserOrderModel.findById(orderId);
+      const order = await this.userOrders.findById(orderId);
 
       if (!order)
         throw new Error(`order for payment reference "${reference}" not found`);
@@ -36,7 +42,7 @@ export class PaymentService {
         //  TODO: handle amount paid !== to cost of order
         // store this information somwehere and contact the ueser
       } else {
-        UserOrderModel.findByIdAndUpdate(order._id, {
+        this.userOrders.findByIdAndUpdate(order._id, {
           paymentType: "Web",
           PaymentStatus: "Successful",
           paymentReference: response.data.data.reference,

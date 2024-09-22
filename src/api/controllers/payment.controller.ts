@@ -1,24 +1,25 @@
+import { Service, Inject } from "typedi";
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "@/interfaces/authenticateRequest";
 import { verifyPayment } from "@/helpers/utils/paystack.utils";
 import { createHmac } from "crypto";
 import { PaymentService } from "@/services/_payment.service";
 
-export default class PaymentController {
-  public static async initializeOrder(
-    req: AuthenticatedRequest,
-    res: Response
-  ) {}
+@Service()
+export class __PaymentController__ {
+  constructor(@Inject() private paymentservice: PaymentService) {}
 
-  public static async verifyPayment(req: AuthenticatedRequest, res: Response) {
+  async initializeOrder(req: AuthenticatedRequest, res: Response) {}
+
+  async __verifyPayment__(req: AuthenticatedRequest, res: Response) {
     const reference = req.params.reference;
 
-    const resp = PaymentService.verify(reference);
+    const resp = this.paymentservice.verify(reference);
 
-    res.send(resp);
+    res.json(resp);
   }
 
-  public static async verifyPaymentWebhook(req: Request, res: Response) {
+  async verifyPaymentWebhook(req: Request, res: Response) {
     const secret = process.env.PAY_STACK_API_KEY as string;
     const hash = createHmac("sha512", secret)
       .update(JSON.stringify(req.body))
@@ -116,6 +117,6 @@ export default class PaymentController {
        *
        */
     }
-    res.send(200);
+    res.json(200);
   }
 }

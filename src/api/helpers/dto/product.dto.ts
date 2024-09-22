@@ -40,3 +40,20 @@ export class ProductDTO {
     @Expose()
     sold: number;
 };
+
+export class ProductCategoryDTO {
+@Expose()
+title: string;
+
+@Exclude()
+_id: string;
+
+@Expose()
+createdAt: Date;
+
+@Expose()
+updatedAt: Date;
+
+@Exclude()
+ __v: number;
+};

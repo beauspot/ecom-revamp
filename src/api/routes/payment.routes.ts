@@ -1,23 +1,31 @@
-import express from "express";
-import { PaymentController } from "@/controllers/paymentCtrls";
-import { auth } from "@/middlewares/authMiddleware";
+import { Router, Request, Response, NextFunction } from "express";
+import { __PaymentController__ } from "@/controllers/payment.controller";
+import { PaymentService } from "@/services/_payment.service";
+import { auth, isAdmin } from "@/middlewares/authMiddleware";
+import { UserOrderModel } from "@/models/orderModel";
 
-// const paymentCtrl = new PaymentController();
+const router = Router();
+const paymentService = new PaymentService(UserOrderModel);
+const paymentCtrl = new __PaymentController__(paymentService);
 
-const paymentRouter = express.Router();
+// router.use(auth);
 
-paymentRouter.use(auth);
+router
+  .route("/paystack/verifypayment")
+  .get((req: Request, res: Response, next: NextFunction) =>
+    paymentCtrl.__verifyPayment__(req, res)
+  );
+router
+  .route("/verifypaymentwebhook")
+  .get(auth, isAdmin, (req: Request, res: Response, next: NextFunction) =>
+    paymentCtrl.verifyPaymentWebhook(req, res)
+  );
 
-paymentRouter.post("/createpayment", PaymentController.startPayment);
-paymentRouter.get("/createpayment", PaymentController.createPayment);
-paymentRouter.get("/paymentdetails", PaymentController.getPayment);
-paymentRouter.post(
-  "/paystack/createpayment",
-  PaymentController.startPaystackPayment
-);
-paymentRouter.get(
-  "/paystack/verifypayment",
-  PaymentController.verifyPaystackPayment
-);
+// router.get("/paymentdetails", PaymentController.getPayment);
+// router.post("/createpayment", PaymentController.startPayment);
+// router.post(
+//   "/paystack/createpayment",
+//   PaymentController.startPaystackPayment
+// );
 
-export default paymentRouter;
+export default router;
