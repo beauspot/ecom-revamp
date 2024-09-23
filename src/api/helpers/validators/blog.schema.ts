@@ -34,5 +34,25 @@ export const updateBlogsSchema = object({
   }),
 });
 
+export const blogCategorySchema = object({
+  body: object({
+    title: string({
+      required_error: "the blog category is needed",
+    }),
+  }),
+});
+
+export const updateBlogCategorySchema = object({
+  body: object({
+    title: string({
+      required_error: "the blog category is needed",
+    }).optional(),
+  }),
+});
+
 export type CreateBlogSchema = TypeOf<typeof createBlogsSchema>["body"];
 export type UpdateBlogSchema = TypeOf<typeof updateBlogsSchema>["body"];
+export type BlogCategorySchema = TypeOf<typeof blogCategorySchema>["body"];
+export type UpdateBlogCategorySchema = TypeOf<
+  typeof updateBlogCategorySchema
+>["body"];
