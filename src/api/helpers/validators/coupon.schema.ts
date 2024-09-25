@@ -1,0 +1,60 @@
+import { isValidObjectId } from "mongoose";
+import { object, string, TypeOf, number, date } from "zod";
+
+export const createCouponSchema = object({
+  body: object({
+    name: string({
+      required_error: "the coupon requires a name.",
+    }),
+    expiry: date({
+      required_error: "the expiry date is required.",
+    }),
+
+    discount: number({
+      required_error: "discount is required",
+    }),
+  }),
+});
+
+export const updateCouponSchema = object({
+  body: object({
+    name: string({
+      required_error: "the coupon requires a name.",
+    }),
+    expiry: date({
+      required_error: "the expiry date is required.",
+    }),
+
+    discount: number({
+      required_error: "discount is required",
+    }),
+  }),
+
+  params: object({
+    id: string({
+      required_error: "The Id of the coupon is not valid",
+    }).refine((id) => isValidObjectId(id), {
+      message: "The ID is invalid",
+    }),
+  }),
+});
+
+export const getSingleBrand = object({
+  params: object({
+    id: string({
+      required_error: "The Id of the coupon is not valid",
+    }).refine((id) => isValidObjectId(id), {
+      message: "The ID is invalid",
+    }),
+  }),
+});
+
+export const deleteSingleBrand = object({
+  params: object({
+    id: string({
+      required_error: "The Id of the coupon is not valid",
+    }).refine((id) => isValidObjectId(id), {
+      message: "The ID is invalid",
+    }),
+  }),
+});
