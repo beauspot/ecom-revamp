@@ -15,7 +15,7 @@ export class BrandService {
   createBrandService = async (category: BrandInterface) => {
     const newBrand = await this.brandmodel.create({ ...category });
     if (!newBrand) {
-      throw new ServiceAPIError("Could not create Category");
+      throw new ServiceAPIError("Could not create Product Brand");
     }
     return newBrand;
   };
@@ -35,7 +35,7 @@ export class BrandService {
     validateMongoDbID(brandID);
     if (!updateBrand)
       throw new ServiceAPIError(
-        `The Category ${brandID} was not found to be updated`
+        `The Brand with: ${brandID} was not found to be updated`
       );
     return updateBrand;
   };
@@ -47,7 +47,7 @@ export class BrandService {
     validateMongoDbID(brandID);
     if (!brandd)
       throw new ServiceAPIError(
-        `The Category with the id: ${brandID} was not found to be deleted`
+        `The Brand with the id: ${brandID} was not found to be deleted`
       );
     return brandd;
   };
@@ -57,7 +57,7 @@ export class BrandService {
     validateMongoDbID(brand);
     if (!brandExists)
       throw new ServiceAPIError(
-        `The Product with the id: ${brand} does not exist`
+        `The brand with the id: ${brand} does not exist`
       );
     return brandExists;
   };
@@ -65,7 +65,7 @@ export class BrandService {
   getAllBrandService = async (): Promise<BrandInterface[]> => {
     const getAllBrands = await this.brandmodel.find();
     if (getAllBrands.length <= 0) {
-      throw new ServiceAPIError(`No category found`);
+      throw new ServiceAPIError(`No product brands found`);
     }
     return getAllBrands;
   };

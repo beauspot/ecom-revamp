@@ -2,7 +2,9 @@ import { Service, Inject } from "typedi";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import asyncHandler from "express-async-handler";
+import { plainToInstance } from "class-transformer";
 
+import { BrandsDTO } from "@/dto/brands.dto";
 import { BrandService } from "@/services/brand.service";
 import { CustomAPIError } from "@/helpers/utils/custom-errors";
 
@@ -13,13 +15,23 @@ export class BrandController {
   createNewBrand = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const newbrand = await this.brandservice.createBrandService(req.body);
-      res.status(StatusCodes.OK).json({ brandData: newbrand });
+
+      const transFormedRes = plainToInstance(BrandsDTO, newbrand, {
+        excludeExtraneousValues: true,
+      });
+
+      res.status(StatusCodes.OK).json({ brandData: transFormedRes });
     }
   );
 
   getAllBrands = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const allBrands = await this.brandservice.getAllBrandService();
+
+      const transFormedRes = plainToInstance(BrandsDTO, allBrands, {
+        excludeExtraneousValues: true,
+      });
+
       if (!allBrands || allBrands.length === 0)
         throw new CustomAPIError(
           `Cannot get all categories`,
@@ -28,7 +40,7 @@ export class BrandController {
       else
         res.status(StatusCodes.OK).json({
           total_categories: allBrands.length,
-          brandData: allBrands,
+          brandData: transFormedRes,
         });
     }
   );
@@ -36,7 +48,12 @@ export class BrandController {
   getSingleBrand = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const brandID = await this.brandservice.getBrandService(id);
-    res.status(StatusCodes.OK).json({ brandData: brandID });
+
+    const transFormedRes = plainToInstance(BrandsDTO, brandID, {
+      excludeExtraneousValues: true,
+    });
+
+    res.status(StatusCodes.OK).json({ brandData: transFormedRes });
   });
 
   updateSingleBrand = asyncHandler(async (req: Request, res: Response) => {
@@ -45,15 +62,18 @@ export class BrandController {
       id,
       req.body
     );
-    res.status(StatusCodes.OK).json({ updated_data: updateBrand });
+
+    const transFormedRes = plainToInstance(BrandsDTO, updateBrand, {
+      excludeExtraneousValues: true,
+    });
+
+    res.status(StatusCodes.OK).json({ updated_data: transFormedRes });
   });
 
   delete_brand = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const brandID = await this.brandservice.deleteBrandService(id);
-    res.status(StatusCodes.OK).json({
-      status: `Category with ID ${brandID} is deleted successfully`,
-      categoryData: brandID,
-    });
+    await this.brandservice.deleteBrandService(id);
+
+    res.status(StatusCodes.OK);
   });
 }
