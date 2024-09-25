@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 
 import { CustomAPIError, ServiceAPIError } from "@/helpers/utils/custom-errors";
+
 const errorHandlerMiddleware = (
   err: Error,
   req: Request,
