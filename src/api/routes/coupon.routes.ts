@@ -8,8 +8,8 @@ import { CouponController } from "../controllers/coupon.controllers";
 import {
   createCouponSchema,
   updateCouponSchema,
-  getSingleBrand,
-  deleteSingleBrand,
+  getSingleCoupon,
+  deleteSingleCoupon,
 } from "@/validators/coupon.schema";
 
 const router = Router();
@@ -33,7 +33,7 @@ router
   .route("/:id")
   .get(
     auth,
-    validate(getSingleBrand),
+    validate(getSingleCoupon),
     (req: Request, res: Response, next: NextFunction) =>
       couponctrl.getSingleCoupon(req, res, next)
   )
@@ -47,7 +47,7 @@ router
   .delete(
     auth,
     isAdmin,
-    validate(deleteSingleBrand),
+    validate(deleteSingleCoupon),
     (req: Request, res: Response, next: NextFunction) =>
       couponctrl.deleteCoupon(req, res, next)
   );

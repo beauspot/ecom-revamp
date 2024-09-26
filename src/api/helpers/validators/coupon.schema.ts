@@ -39,7 +39,7 @@ export const updateCouponSchema = object({
   }),
 });
 
-export const getSingleBrand = object({
+export const getSingleCoupon = object({
   params: object({
     id: string({
       required_error: "The Id of the coupon is not valid",
@@ -49,7 +49,7 @@ export const getSingleBrand = object({
   }),
 });
 
-export const deleteSingleBrand = object({
+export const deleteSingleCoupon = object({
   params: object({
     id: string({
       required_error: "The Id of the coupon is not valid",
@@ -58,3 +58,9 @@ export const deleteSingleBrand = object({
     }),
   }),
 });
+
+export type createCouponInput = TypeOf<typeof createCouponSchema>["body"];
+export type updateCouponInput = TypeOf<typeof updateCouponSchema>["body"];
+export type updateCouponParams = TypeOf<typeof updateCouponSchema>["params"];
+export type getSingleCouponParams = TypeOf<typeof getSingleCoupon>["params"];
+export type deleteSingleCouponParams = TypeOf<typeof deleteSingleCoupon>["params"];
