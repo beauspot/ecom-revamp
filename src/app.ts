@@ -111,7 +111,7 @@ export class EcomApp {
     this.app.use("/api/v1/mall/payment", paymentRoute);
     this.app.use("/api/v1/mall/orders", orderRoute);
 
-    this.app.get("/", (_, res: Response) => {
+    this.app.use("/", (_:Request, res: Response) => {
       res
         .status(StatusCodes.PERMANENT_REDIRECT)
         .json({ message: "Welcome to the E-Commerce rest api application." });
