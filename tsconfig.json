@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "rootDir": "src",
     "outDir": "dist",
@@ -22,7 +22,6 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"],
       "@/api/*": ["./src/api/*"],
       "@/helpers/*": ["./src/api/helpers/*"],
       "@/controllers/*": ["./src/api/controllers/*"],
@@ -38,14 +37,15 @@
       "@/middlewares/*": ["./src/api/helpers/middlewares/*"],
       "@/validators/*": ["./src/api/helpers/validators/*"],
       "@/utils/*": ["./src/api/helpers/utils/*"],
-      "@/types/*": ["./src/api/helpers/types/*"]
+      "@/types/*": ["./src/api/helpers/types/*"],
+      "@/*": ["./src/*"]
     }
   },
   "ts-node": {
-    "complierOptions": {
+    "compilerOptions": {
       "module": "commonjs"
     }
   },
-  "include": ["src/**/*.ts", "/src/types/**/*.d.ts"],
+  "include": ["src/**/*.ts", "/src/types/**/*.d.ts", "/src/__test__/**/*.test.ts"],
   "exclude": ["node_modules", "package.json"]
 }
