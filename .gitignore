@@ -3,3 +3,4 @@ logs
 .env
 ./dist
 jots.txt
+coverage
