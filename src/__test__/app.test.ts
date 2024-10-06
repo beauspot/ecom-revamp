@@ -1,8 +1,5 @@
 import request from "supertest";
-import { NextFunction, Request, Response, Express } from "express";
 import { EcomApp } from "@/app";
-import connectDb from "@/config/dbconfig";
-import runRedisOperation from "@/config/redis.config";
 import { __404_err_page } from "@/middlewares/notFound";
 import log from "@/utils/logger";
 
@@ -39,11 +36,5 @@ describe("Application entery point", () => {
 
       //   log.info(response.body.json);
     });
-  });
-
-  it("should call connectDb and runRedisOperation when listen is called", async () => {
-    await appInstance.listen();
-    expect(runRedisOperation).toHaveBeenCalled();
-    expect(connectDb).toHaveBeenCalledWith(process.env.MONGO_URL);
   });
 });

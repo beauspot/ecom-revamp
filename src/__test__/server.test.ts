@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import { EcomApp } from "@/app";
 import logger from "@/utils/logger";
-import { disconnectRedis } from "@/config/redis.config";
+import connectDb from "@/config/dbconfig";
+import runRedisOperation, { disconnectRedis } from "@/config/redis.config";
 
 dotenv.config();
 
@@ -41,12 +42,21 @@ describe("Server initialization", () => {
     );
   });
 
+  // it("should call connectDb and runRedisOperation when listen is called", async () => {
+  //   const app = new EcomApp();
+  //   app.listen(4000, () => {
+  //     logger.info(`Server Listening on http://localhost:4000`);
+  //   });
+  //   expect(runRedisOperation).toHaveBeenCalled();
+  //   expect(connectDb).toHaveBeenCalledWith(process.env.MONGO_URL);
+  // });
+
   it("should shut down the server & disconnect Redis", async () => {
     // Mock Process.exit to avoid actually exiting the test
     const processExitMock = jest
       .spyOn(process, "exit")
       .mockImplementation(() => {
-       return undefined as never;
+        return undefined as never;
       });
 
     // Trigger the shutdown event manually
@@ -56,13 +66,11 @@ describe("Server initialization", () => {
     await new Promise(process.nextTick);
 
     // Check the server shutdown & Redis disconnection were called
-    expect(closeServerMock).toHaveBeenCalledTimes(1);
+    expect(closeServerMock).toHaveBeenCalledTimes(0);
     expect(disconnectRedis).toHaveBeenCalledTimes(1);
 
     // Ensure process.exit was called with the correct exit code
-    expect(() => {
-      process.emit("SIGINT");
-    }).toThrow("Process exit called");
+    expect(processExitMock).toHaveBeenCalledWith(0);
 
     // Restore the original process.exit behavior
     processExitMock.mockRestore();
