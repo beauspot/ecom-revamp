@@ -12,6 +12,9 @@ module.exports = {
   forceExit: true,
   roots: ['<rootDir>'],
   modulePaths: [compilerOptions.baseUrl],
+  collectCoverageFrom: [
+    "<rootDir>/src/api/**/*.ts"
+  ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }), 
   testMatch: ["**/**/*.test.ts", "**/**/*.spec.ts"],
   transform: {
