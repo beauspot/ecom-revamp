@@ -23,6 +23,7 @@
     "baseUrl": "./",
     "paths": {
       "@/api/*": ["./src/api/*"],
+      "@/test/*": ["./src/__test__/*"],
       "@/helpers/*": ["./src/api/helpers/*"],
       "@/controllers/*": ["./src/api/controllers/*"],
       "@/routes/*": ["./src/api/routes/*"],
