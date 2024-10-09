@@ -17,7 +17,8 @@
     "ts:start": "tsc && node dist/server.js",
     "dev:serve": "ts-node -r tsconfig-paths/register src/server",
     "start:dev": "ts-node-dev --respawn -r tsconfig-paths/register src/server.ts",
-    "test": "jest --watchAll",
+    "test": "jest",
+    "test:watchAll": "jest --watchAll",
     "test:dev": "jest --detectOpenHandles"
   },
   "repository": {
