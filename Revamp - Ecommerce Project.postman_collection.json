@@ -1,0 +1,2635 @@
+{
+	"info": {
+		"_postman_id": "55aaf29d-1eac-4120-b577-47e6a8f9f6fb",
+		"name": "Revamp - Ecommerce Project",
+		"description": "The Monolithic version of an E-commerce Rest API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18146354"
+	},
+	"item": [
+		{
+			"name": "Main Authentication",
+			"item": [
+				{
+					"name": "Users_Crud",
+					"item": [
+						{
+							"name": "Get All Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTMwYmM4Yjc5Y2JlZDE1OGY5ZjNmNSIsImlhdCI6MTcyNjM4NjU0OCwiZXhwIjoxNzI2NDcyOTQ4fQ.w0aSm8eB_UIJXXMx-ZQ_HhyKhtXtaOfFMZwc81vUVDI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/allusers",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"allusers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get a single user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTMwYmM4Yjc5Y2JlZDE1OGY5ZjNmNSIsImlhdCI6MTcyNjM4NjU0OCwiZXhwIjoxNzI2NDcyOTQ4fQ.w0aSm8eB_UIJXXMx-ZQ_HhyKhtXtaOfFMZwc81vUVDI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/66e36d9ef06e2f912573a1e0",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"66e36d9ef06e2f912573a1e0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete A user",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/649c873612d94672776d13e9",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"649c873612d94672776d13e9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"firstName\": \"Caseley\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/651edce222efd7f9c5a9d77e",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"651edce222efd7f9c5a9d77e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Block User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isBlocked\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/block-user/649e6ca057ed6991e191ad43",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"block-user",
+										"649e6ca057ed6991e191ad43"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UnBlock User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isBlocked\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/unblock-user/649e6ca057ed6991e191ad43",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"unblock-user",
+										"649e6ca057ed6991e191ad43"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Passwords",
+					"item": [
+						{
+							"name": "forgot_password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"beauspot@outlook.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/forgotpassword",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"forgotpassword"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset_password",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"Mosthandsome-97#\",\n    \"confirmPassword\": \"Mosthandsome-97#\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/resetpassword/bb91a3b2dcd91ee487d2403c0c0d73869ca8b255f1ad474cd3cf86ba33b7b080",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"resetpassword",
+										"bb91a3b2dcd91ee487d2403c0c0d73869ca8b255f1ad474cd3cf86ba33b7b080"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update_password_field",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"#b1058019\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/password_update",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"password_update"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "address",
+					"item": [
+						{
+							"name": "save address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"address\": \"No 22A miller akhendolor street, off ugbor village GRA Benin-City\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/save-address",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"save-address"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "wishlists",
+					"item": [
+						{
+							"name": "add to wishlists",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"prodId\": \"64f8f46e725946a180ef694c\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/wishlist",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"wishlist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get user wish lists",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/wishlist/650457f2c387d05e9ae66bfd",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"wishlist",
+										"650457f2c387d05e9ae66bfd"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "signup user",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"Paul\",\n    \"lastName\": \"Iyere\",\n    \"email\": \"beauspot@outlook.com\",\n    \"mobileNumber\": \"+2348166633679\",\n    \"password\": \"$%b1058019B\",\n    \"confirmPassword\":\"$%b1058019B\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/signup",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \n\"email\": \"beauspot@outlook.com\",\n\"password\": \"Mosthandsome-97#\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/login",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login Admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \n\"email\": \"beauspot97@gmail.com\",\n\"password\": \"$%b1058019B\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/admin-login",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"admin-login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "handle refresh token",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isBlocked\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/refresh-token",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"refresh-token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logout user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/logout",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Products Services",
+			"item": [
+				{
+					"name": "Product Colors",
+					"item": [
+						{
+							"name": "create a product color",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Rose Pink\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/colors",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"colors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all product colors",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/colors",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"colors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get a single product color",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/colors/651881554bc24e79d974cf1c",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"colors",
+										"651881554bc24e79d974cf1c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "edit a product color",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Dark Purple\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/colors/651881554bc24e79d974cf1c",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"colors",
+										"651881554bc24e79d974cf1c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete product color",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/colors//651881554bc24e79d974cf1c",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"colors",
+										"",
+										"651881554bc24e79d974cf1c"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Product Enquiry",
+					"item": [
+						{
+							"name": "create an enquiry",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Beau Omogbeme Iyere\",\n    \"email\": \"beauspot@outlook.com\",\n    \"mobile\": \"+2348166633679\",\n    \"comment\": \"testing comment\"\n    \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/enquiry",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"enquiry"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all  enquiry",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/enquiry",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"enquiry"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get an  enquiry by ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/enquiry/6519feb41afada5be447d320",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"enquiry",
+										"6519feb41afada5be447d320"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update an  enquiry by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Iyere Handsome Omogbeme\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/enquiry/6519feb41afada5be447d320",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"enquiry",
+										"6519feb41afada5be447d320"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete an  enquiry by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Iyere Handsome Omogbeme\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/enquiry/6519feb41afada5be447d320",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"enquiry",
+										"6519feb41afada5be447d320"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Order Services",
+					"item": [
+						{
+							"name": "get user orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/get-orders",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"get-orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create orders service",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"COD\": true,\n    \"couponApplied\": true,\n    \"userId\": \"6516e2e6a28908d39f58e150\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/cart/cash-order",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"cart",
+										"cash-order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all user orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/getallorders",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"getallorders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get user orders by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{ECOM}}/user/getorderbyuser/64ea6dca299f00a36a205b2d",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"getorderbyuser",
+										"64ea6dca299f00a36a205b2d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"Delivered\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ECOM}}/user/order/update-order/6516f949e29d230ad73c4c6a",
+									"host": [
+										"{{ECOM}}"
+									],
+									"path": [
+										"user",
+										"order",
+										"update-order",
+										"6516f949e29d230ad73c4c6a"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create a product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTM2ZDllZjA2ZTJmOTEyNTczYTFlMCIsImlhdCI6MTcyNjQ4OTYwOSwiZXhwIjoxNzI2NTc2MDA5fQ.gZ4H711Uke-KbdEIYEYkYSxZ5expWu3qhG_ct46pyIw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Samsung S13 plus\",\n    \"description\": \"The Samsung S13 plus display has rounded corners that follow a beautiful curved design, and these corners are within a standard rectangle. When measured as a standard rectangular shape, the screen is 5.42 inches diagonally (actual viewable area is less), with up to 39 hours battery life\",\n    \"price\": 150000,\n    \"brand\": \"Samsung\",\n    \"category\": \"Mobile Phones\",\n    \"sold\": 5,\n    \"quantity\": 500,\n    \"color\": \"grey\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/products/createproduct",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"createproduct"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/products/allproducts",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"allproducts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/products/66e82562dd1b01ffccf6c361",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"66e82562dd1b01ffccf6c361"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTM2ZDllZjA2ZTJmOTEyNTczYTFlMCIsImlhdCI6MTcyNjQ4OTYwOSwiZXhwIjoxNzI2NTc2MDA5fQ.gZ4H711Uke-KbdEIYEYkYSxZ5expWu3qhG_ct46pyIw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"I-phone 8\",\n    \"description\": \"This is just an I-phone 8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/products/66e82562dd1b01ffccf6c361",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"66e82562dd1b01ffccf6c361"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/products/64a698a4a0fd9619e3a01aeb",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"64a698a4a0fd9619e3a01aeb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rate Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTM2ZDllZjA2ZTJmOTEyNTczYTFlMCIsImlhdCI6MTcyNjQ5NzcxMiwiZXhwIjoxNzI2NTg0MTEyfQ.u8ScIFmQrGqQn4BxexEolswqRz_trZfrMeGk0K1tk64",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"66e36d9ef06e2f912573a1e0\",\n    \"prodId\": \"66e82562dd1b01ffccf6c361\",\n    \"star\": 2.2,\n    \"comment\": \"the product is fair\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/products/rateproduct",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"rateproduct"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Images",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTMwYmM4Yjc5Y2JlZDE1OGY5ZjNmNSIsImlhdCI6MTcyNjQ5ODY2MSwiZXhwIjoxNzI2NTg1MDYxfQ.kL2AiZakoPDi7IWZuuHw11dMJ0RsRqt5raRQsObi97w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/beau/Downloads/iphone-8main"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{ECOM}}/products/upload/66e82562dd1b01ffccf6c361",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"products",
+								"upload",
+								"66e82562dd1b01ffccf6c361"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blog",
+			"item": [
+				{
+					"name": "Create a post for the blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"testing blog endpoint2\",\n    \"description\": \"testing blog2\",\n    \"category\": \"tests2\",\n    \"isLiked\": true\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/posts",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all blogs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/posts",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/posts/64f4602e90c8f164ddb9b243",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"posts",
+								"64f4602e90c8f164ddb9b243"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a post for the blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n    \"isLiked\": true\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/posts/64f4602e90c8f164ddb9b243",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"posts",
+								"64f4602e90c8f164ddb9b243"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a single blog",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/posts/64f1db56528b78e548c3be2d",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"posts",
+								"64f1db56528b78e548c3be2d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "like a blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"blogId\": \"64f1db56528b78e548c3be2d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/likes",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dislike Blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"blogId\": \"64f1db56528b78e548c3be2d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogs/dislikes",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogs",
+								"dislikes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blog Category",
+			"item": [
+				{
+					"name": "get all categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/blogscategory/category",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogscategory",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create a post category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Appareal\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogscategory/category",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogscategory",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a single category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogcategory/category/64f7762235db877a880ea4f4",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogcategory",
+								"category",
+								"64f7762235db877a880ea4f4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Food and Beverages\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogcategory/category/64f7762235db877a880ea4f4",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogcategory",
+								"category",
+								"64f7762235db877a880ea4f4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/blogcategory/category/64f7762235db877a880ea4f4",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"blogcategory",
+								"category",
+								"64f7762235db877a880ea4f4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Category",
+			"item": [
+				{
+					"name": "get all categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/productscategory/category",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"productscategory",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create a post category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"smart phones\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/productscategory/category",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"productscategory",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a single category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/productscategory/category/66ed708346aa92a3181d893c",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"productscategory",
+								"category",
+								"66ed708346aa92a3181d893c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Food and Beverages\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/productscategory/category/66ed708346aa92a3181d893c",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"productscategory",
+								"category",
+								"66ed708346aa92a3181d893c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/productscategory/category/64f78f56cfd10c6820835aee",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"productscategory",
+								"category",
+								"64f78f56cfd10c6820835aee"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Brands",
+			"item": [
+				{
+					"name": "get all brands",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/brand/productbrands",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"brand",
+								"productbrands"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create a brand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Samsung\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/brand/productbrands",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"brand",
+								"productbrands"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a single brand",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/brand/productbrands/66f4242b6562a3d7fe4caec3",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"brand",
+								"productbrands",
+								"66f4242b6562a3d7fe4caec3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update brand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Cardbury\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/brand/productbrands/66f4242b6562a3d7fe4caec3",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"brand",
+								"productbrands",
+								"66f4242b6562a3d7fe4caec3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a brand.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/brand/productbrands/66f4242b6562a3d7fe4caec3",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"brand",
+								"productbrands",
+								"66f4242b6562a3d7fe4caec3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coupons",
+			"item": [
+				{
+					"name": "get all coupons",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/coupon",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create a coupon",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"HINDEX\",\n    \"expiry\": \"Sat, 09 Sep 2023 07:33:53 GMT\",\n    \"discount\": 50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/coupon",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a single coupon",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/coupon/64f9edc70e7c88b87d93dcb4",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"coupon",
+								"64f9edc70e7c88b87d93dcb4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update a coupon",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"CARDBURY\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/coupon/64f9dec88e381c33b90064e2",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"coupon",
+								"64f9dec88e381c33b90064e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a single coupon",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/coupon/64f9dec88e381c33b90064e2",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"coupon",
+								"64f9dec88e381c33b90064e2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Cart",
+			"item": [
+				{
+					"name": "add to cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cart\": [\n        {\n            \"id\": \"64f8f03a761ed304740c20c2\",\n            \"count\": 5,\n            \"color\": \"black\",\n            \"price\": 500000\n        },\n        {\n            \"id\": \"64f8f46e725946a180ef694c\",\n            \"count\": 1,\n            \"color\": \"grey\",\n            \"price\": 250000\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/user/cart",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"user",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a user cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/user/user-cart",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"user",
+								"user-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty a user's cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/user/empty-cart",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"user",
+								"empty-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get discount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"coupon\": \"MENDEX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/user/cart/applycoupon",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"user",
+								"cart",
+								"applycoupon"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "create payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/payment/createpayment",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"payment",
+								"createpayment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create payment_post_mthd",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"beauspot@outlook.com\",\n    \"amount\": \"5000\",\n    \"currency\": \"NGN\",\n    \"metadata\": {\n        \"custom_fields\": [\n            {\n                \"display_name\": \"Mobile Number\",\n                \"variable_name\": \"mobile_number\",\n                \"value\": \"+2348176573098\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ECOM}}/payment/createpayment",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"payment",
+								"createpayment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "payment_details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ECOM}}/payment/paymentdetails",
+							"host": [
+								"{{ECOM}}"
+							],
+							"path": [
+								"payment",
+								"paymentdetails"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Home Route.",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ECOM}}/",
+					"host": [
+						"{{ECOM}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "failed route",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4040/api/v1/mall/non-existing-route",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4040",
+					"path": [
+						"api",
+						"v1",
+						"mall",
+						"non-existing-route"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
