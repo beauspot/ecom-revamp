@@ -1,0 +1,1690 @@
+openapi: 3.0.3
+info:
+  title: Revamp - Ecommerce Project
+  description: The Monolithic version of an E-commerce Rest API
+  version: 1.0.0
+  license:
+    name: MIT
+    url: "https://spdx.org/licenses/MIT.html"
+  contact: {
+    name: "Iyere Handsome Omogbeme",
+    url: "https://www.linkedin.com/in/beau-iyere-876b8a171/",
+    email: "beauspot@outlook.com",
+  }
+servers:
+- url: http://localhost:4040
+paths:
+  /user/allusers:
+    get:
+      tags:
+      - Main Authentication
+      - Users_Crud
+      summary: Get All Users
+      description: Get All Users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/66e36d9ef06e2f912573a1e0:
+    get:
+      tags:
+      - Main Authentication
+      - Users_Crud
+      summary: get a single user
+      description: get a single user
+      operationId: getASingleUser
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/649c873612d94672776d13e9:
+    delete:
+      tags:
+      - Main Authentication
+      - Users_Crud
+      summary: Delete A user
+      description: Delete A user
+      operationId: deleteAUser
+      responses:
+        '200':
+          description: ''
+  /user/651edce222efd7f9c5a9d77e:
+    patch:
+      tags:
+      - Main Authentication
+      - Users_Crud
+      summary: Update User
+      description: Update User
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Caseley
+            examples:
+              Update User:
+                value:
+                  firstName: Caseley
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/block-user/649e6ca057ed6991e191ad43:
+    patch:
+      tags:
+      - Main Authentication
+      - Users_Crud
+      summary: Block User
+      description: Block User
+      operationId: blockUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isBlocked:
+                  type: boolean
+                  example: true
+            examples:
+              Block User:
+                value:
+                  isBlocked: true
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/unblock-user/649e6ca057ed6991e191ad43:
+    patch:
+      tags:
+      - Main Authentication
+      - Users_Crud
+      summary: UnBlock User
+      description: UnBlock User
+      operationId: unblockUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isBlocked:
+                  type: boolean
+                  example: false
+            examples:
+              UnBlock User:
+                value:
+                  isBlocked: false
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/forgotpassword:
+    post:
+      tags:
+      - Main Authentication
+      - Passwords
+      summary: forgot_password
+      description: forgot_password
+      operationId: forgotPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: beauspot@outlook.com
+            examples:
+              forgot_password:
+                value:
+                  email: beauspot@outlook.com
+      responses:
+        '200':
+          description: ''
+  /user/resetpassword/bb91a3b2dcd91ee487d2403c0c0d73869ca8b255f1ad474cd3cf86ba33b7b080:
+    patch:
+      tags:
+      - Main Authentication
+      - Passwords
+      summary: reset_password
+      description: reset_password
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                confirmPassword:
+                  type: string
+                  example: Mosthandsome-97#
+                password:
+                  type: string
+                  example: Mosthandsome-97#
+            examples:
+              reset_password:
+                value:
+                  confirmPassword: Mosthandsome-97#
+                  password: Mosthandsome-97#
+      responses:
+        '200':
+          description: ''
+  /user/password_update:
+    put:
+      tags:
+      - Main Authentication
+      - Passwords
+      summary: update_password_field
+      description: update_password_field
+      operationId: updatePasswordField
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: '#b1058019'
+            examples:
+              update_password_field:
+                value:
+                  password: '#b1058019'
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/save-address:
+    put:
+      tags:
+      - Main Authentication
+      - address
+      summary: save address
+      description: save address
+      operationId: saveAddress
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: No 22A miller akhendolor street, off ugbor village GRA Benin-City
+            examples:
+              save address:
+                value:
+                  address: No 22A miller akhendolor street, off ugbor village GRA Benin-City
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/wishlist:
+    put:
+      tags:
+      - Main Authentication
+      - wishlists
+      summary: add to wishlists
+      description: add to wishlists
+      operationId: addToWishlists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prodId:
+                  type: string
+                  example: 64f8f46e725946a180ef694c
+            examples:
+              add to wishlists:
+                value:
+                  prodId: 64f8f46e725946a180ef694c
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/wishlist/650457f2c387d05e9ae66bfd:
+    get:
+      tags:
+      - Main Authentication
+      - wishlists
+      summary: get user wish lists
+      description: get user wish lists
+      operationId: getUserWishLists
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/signup:
+    post:
+      tags:
+      - Main Authentication
+      - Authentication
+      summary: signup user
+      description: signup user
+      operationId: signupUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                confirmPassword:
+                  type: string
+                  example: $%b1058019B
+                email:
+                  type: string
+                  example: beauspot@outlook.com
+                firstName:
+                  type: string
+                  example: Paul
+                lastName:
+                  type: string
+                  example: Iyere
+                mobileNumber:
+                  type: string
+                  example: '+2348166633679'
+                password:
+                  type: string
+                  example: $%b1058019B
+            examples:
+              signup user:
+                value:
+                  confirmPassword: $%b1058019B
+                  email: beauspot@outlook.com
+                  firstName: Paul
+                  lastName: Iyere
+                  mobileNumber: '+2348166633679'
+                  password: $%b1058019B
+      responses:
+        '200':
+          description: ''
+      security:
+      - {}
+  /user/login:
+    post:
+      tags:
+      - Main Authentication
+      - Authentication
+      summary: Login User
+      description: Login User
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: beauspot@outlook.com
+                password:
+                  type: string
+                  example: Mosthandsome-97#
+            examples:
+              Login User:
+                value:
+                  email: beauspot@outlook.com
+                  password: Mosthandsome-97#
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/admin-login:
+    post:
+      tags:
+      - Main Authentication
+      - Authentication
+      summary: Login Admin
+      description: Login Admin
+      operationId: loginAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: beauspot97@gmail.com
+                password:
+                  type: string
+                  example: $%b1058019B
+            examples:
+              Login Admin:
+                value:
+                  email: beauspot97@gmail.com
+                  password: $%b1058019B
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/refresh-token:
+    get:
+      tags:
+      - Main Authentication
+      - Authentication
+      summary: handle refresh token
+      description: handle refresh token
+      operationId: handleRefreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isBlocked:
+                  type: boolean
+                  example: false
+            examples:
+              handle refresh token:
+                value:
+                  isBlocked: false
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/logout:
+    get:
+      tags:
+      - Main Authentication
+      - Authentication
+      summary: Logout user
+      description: Logout user
+      operationId: logoutUser
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /colors:
+    get:
+      tags:
+      - Products Services
+      - Product Colors
+      summary: get all product colors
+      description: get all product colors
+      operationId: getAllProductColors
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Products Services
+      - Product Colors
+      summary: create a product color
+      description: create a product color
+      operationId: createAProductColor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Rose Pink
+            examples:
+              create a product color:
+                value:
+                  title: Rose Pink
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /colors/651881554bc24e79d974cf1c:
+    get:
+      tags:
+      - Products Services
+      - Product Colors
+      summary: get a single product color
+      description: get a single product color
+      operationId: getASingleProductColor
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Products Services
+      - Product Colors
+      summary: edit a product color
+      description: edit a product color
+      operationId: editAProductColor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Dark Purple
+            examples:
+              edit a product color:
+                value:
+                  title: Dark Purple
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /colors//651881554bc24e79d974cf1c:
+    delete:
+      tags:
+      - Products Services
+      - Product Colors
+      summary: delete product color
+      description: delete product color
+      operationId: deleteProductColor
+      requestBody:
+        content:
+          application/json:
+            examples:
+              delete product color:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /enquiry:
+    get:
+      tags:
+      - Products Services
+      - Product Enquiry
+      summary: get all  enquiry
+      description: get all  enquiry
+      operationId: getAllEnquiry
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get all  enquiry:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Products Services
+      - Product Enquiry
+      summary: create an enquiry
+      description: create an enquiry
+      operationId: createAnEnquiry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: testing comment
+                email:
+                  type: string
+                  example: beauspot@outlook.com
+                mobile:
+                  type: string
+                  example: '+2348166633679'
+                name:
+                  type: string
+                  example: Beau Omogbeme Iyere
+            examples:
+              create an enquiry:
+                value:
+                  comment: testing comment
+                  email: beauspot@outlook.com
+                  mobile: '+2348166633679'
+                  name: Beau Omogbeme Iyere
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /enquiry/6519feb41afada5be447d320:
+    get:
+      tags:
+      - Products Services
+      - Product Enquiry
+      summary: get an  enquiry by ID
+      description: get an  enquiry by ID
+      operationId: getAnEnquiryById
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get an  enquiry by ID:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Products Services
+      - Product Enquiry
+      summary: delete an  enquiry by ID
+      description: delete an  enquiry by ID
+      operationId: deleteAnEnquiryById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Iyere Handsome Omogbeme
+            examples:
+              delete an  enquiry by ID:
+                value:
+                  name: Iyere Handsome Omogbeme
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Products Services
+      - Product Enquiry
+      summary: update an  enquiry by ID
+      description: update an  enquiry by ID
+      operationId: updateAnEnquiryById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Iyere Handsome Omogbeme
+            examples:
+              update an  enquiry by ID:
+                value:
+                  name: Iyere Handsome Omogbeme
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/get-orders:
+    get:
+      tags:
+      - Products Services
+      - Order Services
+      summary: get user orders
+      description: get user orders
+      operationId: getUserOrders
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/cart/cash-order:
+    post:
+      tags:
+      - Products Services
+      - Order Services
+      summary: create orders service
+      description: create orders service
+      operationId: createOrdersService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                COD:
+                  type: boolean
+                  example: true
+                couponApplied:
+                  type: boolean
+                  example: true
+                userId:
+                  type: string
+                  example: 6516e2e6a28908d39f58e150
+            examples:
+              create orders service:
+                value:
+                  COD: true
+                  couponApplied: true
+                  userId: 6516e2e6a28908d39f58e150
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/getallorders:
+    get:
+      tags:
+      - Products Services
+      - Order Services
+      summary: get all user orders
+      description: get all user orders
+      operationId: getAllUserOrders
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/getorderbyuser/64ea6dca299f00a36a205b2d:
+    get:
+      tags:
+      - Products Services
+      - Order Services
+      summary: get user orders by ID
+      description: get user orders by ID
+      operationId: getUserOrdersById
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/order/update-order/6516f949e29d230ad73c4c6a:
+    put:
+      tags:
+      - Products Services
+      - Order Services
+      summary: update user orders
+      description: update user orders
+      operationId: updateUserOrders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: Delivered
+            examples:
+              update user orders:
+                value:
+                  status: Delivered
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /products/createproduct:
+    post:
+      tags:
+      - Products Services
+      summary: Create a product
+      description: Create a product
+      operationId: createAProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand:
+                  type: string
+                  example: Samsung
+                category:
+                  type: string
+                  example: Mobile Phones
+                color:
+                  type: string
+                  example: grey
+                description:
+                  type: string
+                  example: The Samsung S13 plus display has rounded corners that follow a beautiful curved design, and these corners are within a standard rectangle. When measured as a standard rectangular shape, the screen is 5.42 inches diagonally (actual viewable area is less), with up to 39 hours battery life
+                price:
+                  type: number
+                  example: 150000
+                quantity:
+                  type: number
+                  example: 500
+                sold:
+                  type: number
+                  example: 5
+                title:
+                  type: string
+                  example: Samsung S13 plus
+            examples:
+              Create a product:
+                value:
+                  brand: Samsung
+                  category: Mobile Phones
+                  color: grey
+                  description: The Samsung S13 plus display has rounded corners that follow a beautiful curved design, and these corners are within a standard rectangle. When measured as a standard rectangular shape, the screen is 5.42 inches diagonally (actual viewable area is less), with up to 39 hours battery life
+                  price: 150000
+                  quantity: 500
+                  sold: 5
+                  title: Samsung S13 plus
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /products/allproducts:
+    get:
+      tags:
+      - Products Services
+      summary: get all products
+      description: get all products
+      operationId: getAllProducts
+      responses:
+        '200':
+          description: ''
+  /products/66e82562dd1b01ffccf6c361:
+    get:
+      tags:
+      - Products Services
+      summary: Get a single Product
+      description: Get a single Product
+      operationId: getASingleProduct
+      responses:
+        '200':
+          description: ''
+    patch:
+      tags:
+      - Products Services
+      summary: update product
+      description: update product
+      operationId: updateProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: This is just an I-phone 8
+                title:
+                  type: string
+                  example: I-phone 8
+            examples:
+              update product:
+                value:
+                  description: This is just an I-phone 8
+                  title: I-phone 8
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /products/64a698a4a0fd9619e3a01aeb:
+    delete:
+      tags:
+      - Products Services
+      summary: Delete Product
+      description: Delete Product
+      operationId: deleteProduct
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /products/rateproduct:
+    put:
+      tags:
+      - Products Services
+      summary: Rate Product
+      description: Rate Product
+      operationId: rateProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: the product is fair
+                prodId:
+                  type: string
+                  example: 66e82562dd1b01ffccf6c361
+                star:
+                  type: number
+                  example: 2.2
+                userId:
+                  type: string
+                  example: 66e36d9ef06e2f912573a1e0
+            examples:
+              Rate Product:
+                value:
+                  comment: the product is fair
+                  prodId: 66e82562dd1b01ffccf6c361
+                  star: 2.2
+                  userId: 66e36d9ef06e2f912573a1e0
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /products/upload/66e82562dd1b01ffccf6c361:
+    put:
+      tags:
+      - Products Services
+      summary: Upload Images
+      description: Upload Images
+      operationId: uploadImages
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogs/posts:
+    get:
+      tags:
+      - Blog
+      summary: Get all blogs
+      description: Get all blogs
+      operationId: getAllBlogs
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Get all blogs:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Blog
+      summary: Create a post for the blog
+      description: Create a post for the blog
+      operationId: createAPostForTheBlog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                  example: tests2
+                description:
+                  type: string
+                  example: testing blog2
+                isLiked:
+                  type: boolean
+                  example: true
+                title:
+                  type: string
+                  example: testing blog endpoint2
+            examples:
+              Create a post for the blog:
+                value:
+                  category: tests2
+                  description: testing blog2
+                  isLiked: true
+                  title: testing blog endpoint2
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogs/posts/64f4602e90c8f164ddb9b243:
+    delete:
+      tags:
+      - Blog
+      summary: Delete a blog
+      description: Delete a blog
+      operationId: deleteABlog
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Delete a blog:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Blog
+      summary: Edit a post for the blog
+      description: Edit a post for the blog
+      operationId: editAPostForTheBlog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isLiked:
+                  type: boolean
+                  example: true
+            examples:
+              Edit a post for the blog:
+                value:
+                  isLiked: true
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogs/posts/64f1db56528b78e548c3be2d:
+    get:
+      tags:
+      - Blog
+      summary: get a single blog
+      description: get a single blog
+      operationId: getASingleBlog
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get a single blog:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogs/likes:
+    put:
+      tags:
+      - Blog
+      summary: like a blog
+      description: like a blog
+      operationId: likeABlog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blogId:
+                  type: string
+                  example: 64f1db56528b78e548c3be2d
+            examples:
+              like a blog:
+                value:
+                  blogId: 64f1db56528b78e548c3be2d
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogs/dislikes:
+    put:
+      tags:
+      - Blog
+      summary: dislike Blog
+      description: dislike Blog
+      operationId: dislikeBlog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blogId:
+                  type: string
+                  example: 64f1db56528b78e548c3be2d
+            examples:
+              dislike Blog:
+                value:
+                  blogId: 64f1db56528b78e548c3be2d
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogscategory/category:
+    get:
+      tags:
+      - Blog Category
+      summary: get all categories
+      description: get all categories
+      operationId: getAllCategories
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Blog Category
+      summary: create a post category
+      description: create a post category
+      operationId: createAPostCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Appareal
+            examples:
+              create a post category:
+                value:
+                  title: Appareal
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /blogcategory/category/64f7762235db877a880ea4f4:
+    get:
+      tags:
+      - Blog Category
+      summary: get a single category
+      description: get a single category
+      operationId: getASingleCategory
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get a single category:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Blog Category
+      summary: update category Copy
+      description: update category Copy
+      operationId: updateCategoryCopy
+      requestBody:
+        content:
+          application/json:
+            examples:
+              update category Copy:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Blog Category
+      summary: update category
+      description: update category
+      operationId: updateCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Food and Beverages
+            examples:
+              update category:
+                value:
+                  title: Food and Beverages
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /productscategory/category:
+    get:
+      tags:
+      - Product Category
+      summary: get all categories
+      description: get all categories
+      operationId: getAllCategories1
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Product Category
+      summary: create a post category
+      description: create a post category
+      operationId: createAPostCategory1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: smart phones
+            examples:
+              create a post category:
+                value:
+                  title: smart phones
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /productscategory/category/66ed708346aa92a3181d893c:
+    get:
+      tags:
+      - Product Category
+      summary: get a single category
+      description: get a single category
+      operationId: getASingleCategory1
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get a single category:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Product Category
+      summary: update category
+      description: update category
+      operationId: updateCategory1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Food and Beverages
+            examples:
+              update category:
+                value:
+                  title: Food and Beverages
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /productscategory/category/64f78f56cfd10c6820835aee:
+    delete:
+      tags:
+      - Product Category
+      summary: update category Copy
+      description: update category Copy
+      operationId: updateCategoryCopy1
+      requestBody:
+        content:
+          application/json:
+            examples:
+              update category Copy:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /brand/productbrands:
+    get:
+      tags:
+      - Brands
+      summary: get all brands
+      description: get all brands
+      operationId: getAllBrands
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Brands
+      summary: create a brand
+      description: create a brand
+      operationId: createABrand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Samsung
+            examples:
+              create a brand:
+                value:
+                  title: Samsung
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /brand/productbrands/66f4242b6562a3d7fe4caec3:
+    get:
+      tags:
+      - Brands
+      summary: get a single brand
+      description: get a single brand
+      operationId: getASingleBrand
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get a single brand:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Brands
+      summary: Delete a brand.
+      description: Delete a brand.
+      operationId: deleteABrand
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Delete a brand.:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Brands
+      summary: update brand
+      description: update brand
+      operationId: updateBrand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Cardbury
+            examples:
+              update brand:
+                value:
+                  title: Cardbury
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /coupon:
+    get:
+      tags:
+      - Coupons
+      summary: get all coupons
+      description: get all coupons
+      operationId: getAllCoupons
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Coupons
+      summary: create a coupon
+      description: create a coupon
+      operationId: createACoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                discount:
+                  type: number
+                  example: 50
+                expiry:
+                  type: string
+                  example: Sat, 09 Sep 2023 07:33:53 GMT
+                name:
+                  type: string
+                  example: HINDEX
+            examples:
+              create a coupon:
+                value:
+                  discount: 50
+                  expiry: Sat, 09 Sep 2023 07:33:53 GMT
+                  name: HINDEX
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /coupon/64f9edc70e7c88b87d93dcb4:
+    get:
+      tags:
+      - Coupons
+      summary: get a single coupon
+      description: get a single coupon
+      operationId: getASingleCoupon
+      requestBody:
+        content:
+          application/json:
+            examples:
+              get a single coupon:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /coupon/64f9dec88e381c33b90064e2:
+    delete:
+      tags:
+      - Coupons
+      summary: Delete a single coupon
+      description: Delete a single coupon
+      operationId: deleteASingleCoupon
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Delete a single coupon:
+                value: ''
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Coupons
+      summary: update a coupon
+      description: update a coupon
+      operationId: updateACoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: CARDBURY
+            examples:
+              update a coupon:
+                value:
+                  name: CARDBURY
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/cart:
+    post:
+      tags:
+      - User Cart
+      summary: add to cart
+      description: add to cart
+      operationId: addToCart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      color:
+                        type: string
+                        example: black
+                      count:
+                        type: number
+                        example: 5
+                      id:
+                        type: string
+                        example: 64f8f03a761ed304740c20c2
+                      price:
+                        type: number
+                        example: 500000
+                  example:
+                  - color: black
+                    count: 5
+                    id: 64f8f03a761ed304740c20c2
+                    price: 500000
+                  - color: grey
+                    count: 1
+                    id: 64f8f46e725946a180ef694c
+                    price: 250000
+            examples:
+              add to cart:
+                value:
+                  cart:
+                  - color: black
+                    count: 5
+                    id: 64f8f03a761ed304740c20c2
+                    price: 500000
+                  - color: grey
+                    count: 1
+                    id: 64f8f46e725946a180ef694c
+                    price: 250000
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/user-cart:
+    get:
+      tags:
+      - User Cart
+      summary: get a user cart
+      description: get a user cart
+      operationId: getAUserCart
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/empty-cart:
+    delete:
+      tags:
+      - User Cart
+      summary: Empty a user's cart
+      description: Empty a user's cart
+      operationId: emptyAUserSCart
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /user/cart/applycoupon:
+    post:
+      tags:
+      - User Cart
+      summary: get discount
+      description: get discount
+      operationId: getDiscount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                coupon:
+                  type: string
+                  example: MENDEX
+            examples:
+              get discount:
+                value:
+                  coupon: MENDEX
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /payment/createpayment:
+    get:
+      tags:
+      - Payment
+      summary: create payment
+      description: create payment
+      operationId: createPayment
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Payment
+      summary: create payment_post_mthd
+      description: create payment_post_mthd
+      operationId: createPaymentPostMthd
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  example: '5000'
+                currency:
+                  type: string
+                  example: NGN
+                email:
+                  type: string
+                  example: beauspot@outlook.com
+                metadata:
+                  type: object
+                  properties:
+                    custom_fields:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          display_name:
+                            type: string
+                            example: Mobile Number
+                          value:
+                            type: string
+                            example: '+2348176573098'
+                          variable_name:
+                            type: string
+                            example: mobile_number
+                      example:
+                      - display_name: Mobile Number
+                        value: '+2348176573098'
+                        variable_name: mobile_number
+            examples:
+              create payment_post_mthd:
+                value:
+                  amount: '5000'
+                  currency: NGN
+                  email: beauspot@outlook.com
+                  metadata:
+                    custom_fields:
+                    - display_name: Mobile Number
+                      value: '+2348176573098'
+                      variable_name: mobile_number
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /payment/paymentdetails:
+    get:
+      tags:
+      - Payment
+      summary: payment_details
+      description: payment_details
+      operationId: paymentDetails
+      responses:
+        '200':
+          description: ''
+      security:
+      - bearerAuth: []
+  /:
+    get:
+      summary: Get Home Route.
+      description: Get Home Route.
+      operationId: getHomeRoute
+      responses:
+        '200':
+          description: ''
+  /api/v1/mall/non-existing-route:
+    get:
+      summary: failed route
+      description: failed route
+      operationId: failedRoute
+      responses:
+        '200':
+          description: ''
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+- name: Main Authentication
+- name: Users_Crud
+- name: Passwords
+- name: address
+- name: wishlists
+- name: Authentication
+- name: Products Services
+- name: Product Colors
+- name: Product Enquiry
+- name: Order Services
+- name: Blog
+- name: Blog Category
+- name: Product Category
+- name: Brands
+- name: Coupons
+- name: User Cart
+- name: Payment
+
