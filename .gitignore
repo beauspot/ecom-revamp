@@ -10,3 +10,4 @@ src/__test__/sum.ts
 src/__test__/swappy-getter.ts
 src/__test__/swappy-getter.test.ts
 jots2.txt
+src/api/helpers/config/swagger.config.ts
