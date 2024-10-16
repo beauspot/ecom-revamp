@@ -31,6 +31,8 @@ import couponRoute from "@/routes/coupon.routes";
 import paymentRoute from "@/routes/payment.routes";
 import orderRoute from "@/routes/order.routes";
 
+// import { swaggerSpecs } from "@/config/swagger.config";
+
 // Reference path for sessions.
 /// <reference path="./api/types/express/custom.d.ts" />
 
@@ -42,10 +44,10 @@ const limiter = rateLimit({
 });
 
 function createServer() {
-  
   // let server!: Server;
 
   const app = express();
+  const swaggerSpecs = YAML.load(path.join(__dirname, "./../swagger.yaml"));
 
   app.use(express.json());
   app.use(morgan("combined"));
@@ -83,6 +85,11 @@ function createServer() {
   app.use("/api/v1/mall/enquiry", enquiryRoute);
   app.use("/api/v1/mall/payment", paymentRoute);
   app.use("/api/v1/mall/orders", orderRoute);
+  app.use(
+    "/api/v1/mall/docs",
+    swaggerUI.serve,
+    swaggerUI.setup(swaggerSpecs, { explorer: true })
+  );
 
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).send(err.message);
@@ -102,24 +109,3 @@ function createServer() {
 }
 
 export default createServer;
-
-/**
- * New format for server.ts file: import express from "express";
- * 
-import routes from "../routes";
-import deserializeUser from "../middleware/deserializeUser";
-
-function createServer() {
-  const app = express();
-
-  app.use(express.json());
-
-  app.use(deserializeUser);
-
-  routes(app);
-
-  return app;
-}
-
-export default createServer;
- */
