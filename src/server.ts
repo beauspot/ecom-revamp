@@ -88,7 +88,7 @@ function createServer() {
   app.use(
     "/api/v1/mall/docs",
     swaggerUI.serve,
-    swaggerUI.setup(swaggerSpecs, { explorer: true })
+    swaggerUI.setup(swaggerSpecs, { explorer: false })
   );
 
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
