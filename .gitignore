@@ -9,5 +9,10 @@ src/__test__/index.test.ts
 src/__test__/sum.ts
 src/__test__/swappy-getter.ts
 src/__test__/swappy-getter.test.ts
+src/__test__/soundPlayer.test.ts
+src/__test__/sound-playerConsumer.test.ts
+src/__test__/mock.test.ts
+src/__test__/soundPlayer.ts
+src/__test__/sound-player-consumer.ts
 jots2.txt
 src/api/helpers/config/swagger.config.ts
