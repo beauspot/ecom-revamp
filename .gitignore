@@ -16,3 +16,4 @@ src/__test__/soundPlayer.ts
 src/__test__/sound-player-consumer.ts
 jots2.txt
 src/api/helpers/config/swagger.config.ts
+.env.dev
