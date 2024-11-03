@@ -1,6 +1,8 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
+import logger from "@/utils/logger";
+
 dotenv.config();
 
 export const mailer = (mail:string, subject:string, text:string) => {
@@ -20,6 +22,6 @@ export const mailer = (mail:string, subject:string, text:string) => {
   };
   transporter
     .sendMail(mailOptions)
-    .then(() => console.log("Mail sent successfully"))
-    .catch((error) => console.error(error.message));
+    .then(() => logger.info("Mail sent successfully"))
+    .catch((error) => logger.error(error.message));
 };
