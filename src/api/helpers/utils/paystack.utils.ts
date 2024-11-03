@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 import axios from "axios";
 import { InitializePaymentInput } from "@/types/payment_init";
 
+import logger from "@/utils/logger";
+
 dotenv.config();
 
 export const initializePayment = async (data: InitializePaymentInput) => {
@@ -27,7 +29,7 @@ export const initializePayment = async (data: InitializePaymentInput) => {
 
     return response;
   } catch (error) {
-    console.error;
+    logger.error(error);
   }
 };
 
@@ -46,6 +48,6 @@ export const verifyPayment = async (reference: string) => {
 
     return response;
   } catch (error) {
-    console.error;
+    logger.error(error);
   }
 };
