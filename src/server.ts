@@ -50,7 +50,7 @@ function createServer() {
   const swaggerSpecs = YAML.load(path.join(__dirname, "./../swagger.yaml"));
 
   app.use(express.json());
-  app.use(morgan("combined"));
+  // app.use(morgan("combined"));
   app.use(limiter);
   app.use(cors());
   app.use(helmet());
